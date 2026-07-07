@@ -1,0 +1,14 @@
+node_modules
+/build
+/.svelte-kit
+/package
+.env
+.DS_Store
+Thumbs.db
+
+# Rust / Tauri
+/src-tauri/target
+/src-tauri/gen
+
+# Sidecar binaries (added manually / by fetch script)
+/src-tauri/binaries/*.exe
