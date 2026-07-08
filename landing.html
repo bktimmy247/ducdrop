@@ -139,11 +139,13 @@
     .platform-downloads a { text-decoration:none; padding:14px; border-radius:18px; background:rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.10); }
     .platform-downloads a strong { display:block; font-size:14px; margin-bottom:5px; }
     .platform-downloads a span { color:var(--muted); font-size:12px; font-weight:800; }
-    .picker { display:grid; grid-template-columns: 1fr 2fr; gap:12px; margin-top:18px; }
-    .picker label { display:grid; gap:6px; font-size:12px; font-weight:900; color:#c3c7d6; text-transform:uppercase; letter-spacing:.4px; }
-    .picker select { height:48px; padding:0 14px; border-radius:16px; background:rgba(7,17,31,.85); color:#f6fbff; border:1px solid rgba(255,255,255,.14); font-weight:800; font-size:14px; }
-    .picker-note { margin-top:12px !important; color:#9fe9c7 !important; font-weight:800; }
-    @media (max-width:640px){ .picker { grid-template-columns:1fr; } }
+    .dl-grid { display:grid; grid-template-columns: repeat(4, 1fr); gap:16px; }
+    .dl-card { display:flex; flex-direction:column; gap:12px; padding:24px; border-radius:26px; background:linear-gradient(180deg, rgba(255,255,255,.09), rgba(255,255,255,.035)); border:1px solid rgba(255,255,255,.12); box-shadow: inset 0 1px 0 rgba(255,255,255,.07); }
+    .dl-card .dl-os { font-size:17px; font-weight:900; letter-spacing:-.4px; }
+    .dl-card .dl-meta { color:#c3c7d6; font-size:13px; font-weight:800; margin-bottom:auto; }
+    .dl-card .btn { width:100%; }
+    @media (max-width:960px){ .dl-grid { grid-template-columns: repeat(2,1fr); } }
+    @media (max-width:640px){ .dl-grid { grid-template-columns: 1fr; } }
     .faq { display:grid; gap:12px; }
     details { border-radius:18px; background:rgba(255,255,255,.055); border:1px solid rgba(255,255,255,.08); padding:16px 18px; }
     summary { cursor:pointer; font-weight:900; } details p { color:var(--muted); line-height:1.6; margin:12px 0 0; }
@@ -255,26 +257,28 @@
     </section>
 
     <section id="download">
-      <div class="download">
-        <div>
-          <h2>Tải DucDrop v1.1.2</h2>
-          <p>Chọn phiên bản và hệ điều hành, bấm Tải là tải về ngay. Trang tự gợi ý bản phù hợp máy anh/chị.</p>
-          <div class="picker">
-            <label>Phiên bản
-              <select id="verSelect"><option value="v1.1.2">v1.1.2 (mới nhất)</option></select>
-            </label>
-            <label>Nền tảng
-              <select id="osSelect">
-                <option value="win">Windows x64 — EXE • 46.5 MB</option>
-                <option value="mac">macOS Apple Silicon — DMG • 66.9 MB</option>
-                <option value="linux-appimage">Linux x64 — AppImage • 146.9 MB</option>
-                <option value="linux-deb">Linux Debian/Ubuntu — DEB • 72.2 MB</option>
-              </select>
-            </label>
-          </div>
-          <p class="picker-note" id="pickerNote">Đã chọn: Windows x64</p>
+      <div class="section-head"><h2>Tải DucDrop v1.1.2</h2><p>Chọn đúng hệ điều hành của anh/chị rồi bấm Tải. Mỗi nền tảng có nút tải riêng.</p></div>
+      <div class="dl-grid">
+        <div class="dl-card">
+          <div class="dl-os">🪟 Windows x64</div>
+          <div class="dl-meta">EXE installer • 46.5 MB</div>
+          <a class="btn primary" href="https://github.com/bktimmy247/ducdrop/releases/download/v1.1.2/DucDrop_1.1.2_x64-setup.exe" download>⬇ Tải cho Windows</a>
         </div>
-        <a class="btn primary" id="downloadBtn" href="https://github.com/bktimmy247/ducdrop/releases/download/v1.1.2/DucDrop_1.1.2_x64-setup.exe" download>⬇ Tải ngay</a>
+        <div class="dl-card">
+          <div class="dl-os"> macOS Apple Silicon</div>
+          <div class="dl-meta">DMG • 66.9 MB</div>
+          <a class="btn primary" href="https://github.com/bktimmy247/ducdrop/releases/download/v1.1.2/DucDrop_1.1.2_aarch64.dmg" download>⬇ Tải cho macOS</a>
+        </div>
+        <div class="dl-card">
+          <div class="dl-os">🐧 Linux x64 (AppImage)</div>
+          <div class="dl-meta">AppImage • 146.9 MB</div>
+          <a class="btn primary" href="https://github.com/bktimmy247/ducdrop/releases/download/v1.1.2/DucDrop_1.1.2_amd64.AppImage" download>⬇ Tải AppImage</a>
+        </div>
+        <div class="dl-card">
+          <div class="dl-os">🐧 Linux Debian/Ubuntu</div>
+          <div class="dl-meta">DEB • 72.2 MB</div>
+          <a class="btn primary" href="https://github.com/bktimmy247/ducdrop/releases/download/v1.1.2/DucDrop_1.1.2_amd64.deb" download>⬇ Tải bản .deb</a>
+        </div>
       </div>
     </section>
 
