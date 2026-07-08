@@ -3,374 +3,386 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>DucDrop — Drop link. Lấy video ngay.</title>
-  <meta name="description" content="DucDrop giúp tải video, audio, thumbnail, subtitle và playlist YouTube/Facebook trên Windows bằng một giao diện đơn giản." />
+  <title>DucDrop v1.1.3 — Thả link, lấy video ngay</title>
+  <meta name="description" content="DucDrop là app Windows tải video/audio/thumbnail/subtitle từ YouTube, Facebook public và playlist. Có dừng lệnh tải thật, không cần dùng command line." />
+  <meta name="theme-color" content="#070b18" />
+  <meta property="og:title" content="DucDrop v1.1.3 — Drop link. Lấy video ngay." />
+  <meta property="og:description" content="Một app Windows gọn, đẹp, có yt-dlp + ffmpeg sẵn. Dán link, chọn mode, file về Downloads/DucDrop." />
   <style>
     :root {
-      --bg: #06111f;
-      --card: rgba(12, 24, 45, .72);
-      --line: rgba(137,207,255,.18);
-      --text: #f6fbff;
-      --muted: #b4c6df;
-      --cyan: #18c7ff;
-      --violet: #7c3aed;
-      --mint: #2ee59d;
-      --warn: #ffd166;
-      --pink: #ff4fd8;
-      --shadow: 0 28px 90px rgba(0,0,0,.45);
+      --bg: #060814;
+      --bg2: #0b1024;
+      --panel: rgba(13, 20, 43, .72);
+      --panel2: rgba(255, 255, 255, .065);
+      --line: rgba(156, 210, 255, .18);
+      --line2: rgba(255, 255, 255, .14);
+      --text: #f7fbff;
+      --muted: #a9bad4;
+      --dim: #71819a;
+      --cyan: #19d4ff;
+      --mint: #37f5ae;
+      --violet: #8b5cf6;
+      --pink: #ff53cf;
+      --amber: #ffd166;
+      --danger: #ff5572;
+      --shadow: 0 32px 120px rgba(0,0,0,.52);
+      --radius: 30px;
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
     * { box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
+    html { scroll-behavior: smooth; background: var(--bg); }
     body {
       margin: 0;
       color: var(--text);
-      background:
-        radial-gradient(circle at 12% 0%, rgba(24,199,255,.30), transparent 32%),
-        radial-gradient(circle at 88% 8%, rgba(255,79,216,.22), transparent 30%),
-        radial-gradient(circle at 50% 42%, rgba(124,58,237,.18), transparent 44%),
-        linear-gradient(180deg, #07101f 0%, #060b14 62%, #04070d 100%);
       min-height: 100vh;
       overflow-x: hidden;
+      background:
+        radial-gradient(circle at 50% -10%, rgba(25,212,255,.24), transparent 28%),
+        radial-gradient(circle at 88% 14%, rgba(255,83,207,.20), transparent 31%),
+        radial-gradient(circle at 12% 30%, rgba(139,92,246,.26), transparent 34%),
+        linear-gradient(180deg, #080b19 0%, #050711 52%, #03050b 100%);
     }
     body::before {
       content: "";
       position: fixed;
       inset: 0;
+      z-index: -3;
       pointer-events: none;
-      opacity: .34;
-      background-image: linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px);
-      background-size: 56px 56px;
-      mask-image: linear-gradient(to bottom, #000, transparent 85%);
+      background-image:
+        radial-gradient(circle, rgba(255,255,255,.42) 0 1px, transparent 1.5px),
+        linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px);
+      background-size: 140px 140px, 64px 64px, 64px 64px;
+      mask-image: linear-gradient(#000, rgba(0,0,0,.72) 48%, transparent 92%);
+      opacity: .5;
     }
     a { color: inherit; }
-    .wrap { width: min(1180px, calc(100% - 40px)); margin: 0 auto; position: relative; }
-    .topbar {
-      position: sticky; top: 12px; z-index: 20; width: min(1180px, calc(100% - 40px)); margin: 12px auto 0;
-      border: 1px solid rgba(255,255,255,.12); background: rgba(4,10,20,.62); backdrop-filter: blur(18px);
-      border-radius: 999px; box-shadow: 0 18px 70px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.08);
+    .aurora {
+      position: fixed;
+      inset: -20vh -18vw auto -18vw;
+      height: 80vh;
+      z-index: -2;
+      pointer-events: none;
+      filter: blur(36px) saturate(1.18);
+      opacity: .62;
+      background:
+        radial-gradient(circle at 25% 22%, rgba(25,212,255,.46), transparent 26%),
+        radial-gradient(circle at 58% 16%, rgba(139,92,246,.42), transparent 29%),
+        radial-gradient(circle at 77% 30%, rgba(255,83,207,.30), transparent 25%),
+        radial-gradient(circle at 47% 58%, rgba(55,245,174,.18), transparent 30%);
+      animation: breathe 9s ease-in-out infinite alternate;
     }
-    .nav { height: 64px; display: flex; align-items: center; justify-content: space-between; gap: 18px; padding: 0 10px 0 16px; }
-    .brand { display: flex; align-items: center; gap: 13px; font-weight: 900; letter-spacing: -.4px; }
-    .brand img { width: 42px; height: 42px; border-radius: 15px; padding: 7px; background: rgba(255,255,255,.07); border: 1px solid var(--line); box-shadow: 0 14px 45px rgba(24,199,255,.20); }
-    .navlinks { display: flex; gap: 18px; color: var(--muted); font-weight: 800; font-size: 14px; }
-    .navlinks a { text-decoration: none; transition: color .2s ease; }
+    @keyframes breathe { from { transform: translate3d(-1.5%, -1%, 0) scale(1); } to { transform: translate3d(1.5%, 1%, 0) scale(1.05); } }
+    .wrap { width: min(1160px, calc(100% - 34px)); margin: 0 auto; position: relative; }
+    .progress { position: fixed; inset: 0 0 auto; height: 3px; z-index: 60; background: rgba(255,255,255,.08); }
+    .progress span { display: block; height: 100%; width: 0%; background: linear-gradient(90deg, var(--cyan), var(--mint), var(--pink)); box-shadow: 0 0 24px rgba(25,212,255,.7); }
+    .topbar {
+      position: sticky; top: 12px; z-index: 50;
+      width: min(1160px, calc(100% - 28px)); margin: 12px auto 0;
+      border: 1px solid rgba(255,255,255,.13);
+      border-radius: 999px;
+      background: rgba(5, 9, 21, .62);
+      backdrop-filter: blur(20px);
+      box-shadow: 0 18px 70px rgba(0,0,0,.34), inset 0 1px 0 rgba(255,255,255,.08);
+    }
+    .nav { height: 62px; display:flex; align-items:center; justify-content:space-between; gap: 14px; padding: 0 9px 0 14px; }
+    .brand { display:flex; align-items:center; gap: 12px; text-decoration:none; min-width: 0; }
+    .brand img { width: 42px; height:42px; border-radius: 15px; padding: 7px; background: rgba(255,255,255,.08); border:1px solid var(--line); box-shadow: 0 10px 34px rgba(25,212,255,.22); }
+    .brand strong { display:block; font-size: 15px; letter-spacing: -.2px; }
+    .brand span { display:block; color: var(--muted); font-size: 11px; font-weight: 800; margin-top: 2px; white-space: nowrap; }
+    .navlinks { display:flex; align-items:center; gap: 18px; color: var(--muted); font-size: 13px; font-weight: 900; }
+    .navlinks a { text-decoration:none; transition: color .2s ease; }
     .navlinks a:hover { color: var(--text); }
     .btn {
-      display: inline-flex; align-items: center; justify-content: center; gap: 10px;
-      min-height: 46px; padding: 0 18px; border-radius: 999px; border: 1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.07); text-decoration: none; font-weight: 900; color: var(--text);
-      box-shadow: inset 0 1px 0 rgba(255,255,255,.08); transition: transform .18s ease, box-shadow .18s ease;
+      display:inline-flex; align-items:center; justify-content:center; gap: 9px;
+      min-height: 45px; padding: 0 18px; border-radius: 999px; text-decoration:none;
+      border: 1px solid rgba(255,255,255,.13); color: var(--text); font-weight: 950;
+      background: rgba(255,255,255,.075);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.10);
+      transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+      cursor: pointer;
+      white-space: nowrap;
     }
-    .btn.primary { color: #03101d; background: linear-gradient(135deg, #7ee7ff, var(--mint) 48%, #fff4bf); box-shadow: 0 20px 70px rgba(24,199,255,.34), 0 0 0 8px rgba(46,229,157,.07); border: 0; }
-    .btn:hover { transform: translateY(-2px); box-shadow: 0 18px 50px rgba(24,199,255,.16), inset 0 1px 0 rgba(255,255,255,.08); }
-
-    .hero { padding: 86px 0 62px; position: relative; }
-    .hero::before { content:""; position:absolute; inset: 28px -70px auto auto; width: 520px; height: 520px; border-radius: 50%; background: conic-gradient(from 120deg, rgba(24,199,255,.0), rgba(24,199,255,.34), rgba(255,79,216,.22), rgba(46,229,157,.24), rgba(24,199,255,.0)); filter: blur(32px); opacity:.74; animation: spin 18s linear infinite; pointer-events:none; }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    .hero-grid { display: grid; grid-template-columns: 1.02fr .98fr; gap: 44px; align-items: center; }
-    .eyebrow { display: inline-flex; gap: 9px; align-items: center; padding: 8px 12px; border-radius: 999px; color: #c6f6ff; background: rgba(24,199,255,.10); border: 1px solid rgba(24,199,255,.20); font-weight: 900; font-size: 13px; }
-    h1 { margin: 22px 0 18px; font-size: clamp(52px, 7vw, 94px); line-height: .86; letter-spacing: -4.8px; }
-    .grad { background: linear-gradient(135deg, #fff, #a8eaff 45%, #bfa8ff); -webkit-background-clip: text; background-clip: text; color: transparent; }
-    .lead { color: var(--muted); font-size: 20px; line-height: 1.72; max-width: 640px; margin: 0 0 30px; }
-    .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 20px; }
-    .mini-proof { display: flex; gap: 10px; flex-wrap: wrap; color: #dff8ff; font-weight: 900; font-size: 13px; }
-    .pill { padding: 9px 12px; border-radius: 999px; background: linear-gradient(135deg, rgba(24,199,255,.13), rgba(255,79,216,.08)); border: 1px solid rgba(255,255,255,.14); box-shadow: inset 0 1px 0 rgba(255,255,255,.08); }
-
-    .tilt { transform-style: preserve-3d; will-change: transform; transition: transform .18s ease; }
-    .app-card {
-      position: relative; border-radius: 38px; padding: 20px; background: linear-gradient(160deg, rgba(24,199,255,.34), rgba(255,79,216,.16) 32%, rgba(124,58,237,.20) 52%, rgba(12,20,34,.94)); border: 1px solid rgba(255,255,255,.16); box-shadow: 0 34px 120px rgba(0,0,0,.55), 0 0 80px rgba(24,199,255,.16); overflow: hidden; transform: perspective(1100px) rotateY(-5deg) rotateX(2deg);
+    .btn.primary { color:#03111f; border:0; background: linear-gradient(135deg, #8cf0ff 0%, var(--mint) 48%, #fff1a8 100%); box-shadow: 0 20px 70px rgba(25,212,255,.36), 0 0 0 8px rgba(55,245,174,.07); }
+    .btn:hover { transform: translateY(-2px); border-color: rgba(25,212,255,.34); box-shadow: 0 18px 55px rgba(25,212,255,.18), inset 0 1px 0 rgba(255,255,255,.10); }
+    .hero { min-height: calc(100vh - 74px); display:grid; align-items:center; padding: 66px 0 76px; position: relative; }
+    .hero-grid { display:grid; grid-template-columns: minmax(0, .94fr) minmax(360px, 1.06fr); gap: 42px; align-items:center; }
+    .eyebrow { display:inline-flex; align-items:center; gap: 9px; padding: 8px 12px; border-radius:999px; border:1px solid rgba(25,212,255,.24); background: rgba(25,212,255,.10); color:#d8faff; font-size: 13px; font-weight: 950; box-shadow: inset 0 1px 0 rgba(255,255,255,.08); }
+    h1 { margin: 22px 0 18px; font-size: clamp(56px, 8vw, 108px); line-height: .84; letter-spacing: -5.2px; max-width: 760px; }
+    .grad { background: linear-gradient(135deg, #fff 0%, #a5efff 34%, #d1bdff 66%, #fff3bf 100%); -webkit-background-clip:text; background-clip:text; color:transparent; }
+    .lead { margin: 0 0 28px; color: var(--muted); font-size: clamp(17px, 2vw, 21px); line-height: 1.72; max-width: 640px; }
+    .hero-actions { display:flex; gap: 12px; flex-wrap: wrap; margin-bottom: 18px; }
+    .mini-proof { display:flex; gap: 9px; flex-wrap:wrap; }
+    .pill { padding: 9px 12px; border-radius: 999px; background: linear-gradient(135deg, rgba(25,212,255,.13), rgba(255,83,207,.09)); border: 1px solid rgba(255,255,255,.14); color:#e5f8ff; font-weight: 950; font-size: 12.5px; box-shadow: inset 0 1px 0 rgba(255,255,255,.08); }
+    .stage { position: relative; min-height: 620px; perspective: 1200px; transform-style: preserve-3d; }
+    .orbit { position:absolute; inset: 8% -4% auto 5%; height: 78%; border: 1px solid rgba(25,212,255,.18); border-radius: 50%; transform: rotate(-16deg) translateZ(-80px); opacity:.72; }
+    .orbit::before, .orbit::after { content:""; position:absolute; width:12px; height:12px; border-radius:50%; background: var(--mint); box-shadow: 0 0 28px var(--mint); }
+    .orbit::before { left: 12%; top: 28%; } .orbit::after { right: 16%; bottom: 22%; background: var(--pink); box-shadow: 0 0 28px var(--pink); }
+    .device { position:absolute; border:1px solid rgba(255,255,255,.14); background: linear-gradient(160deg, rgba(255,255,255,.12), rgba(255,255,255,.04)); box-shadow: var(--shadow), inset 0 1px 0 rgba(255,255,255,.12); backdrop-filter: blur(18px); transform-style: preserve-3d; will-change: transform; }
+    .laptop { left: 3%; right: 1%; top: 15%; min-height: 374px; border-radius: 34px; padding: 18px; transform: rotateY(-8deg) rotateX(3deg) translateZ(20px); }
+    .phone { width: 176px; min-height: 356px; right: 3%; bottom: 2%; border-radius: 38px; padding: 11px; transform: rotateZ(7deg) translateZ(90px); }
+    .mini-card { width: 238px; left: -2%; bottom: 9%; border-radius: 28px; padding: 18px; transform: rotateZ(-7deg) translateZ(80px); }
+    .window { height: 100%; border-radius: 24px; overflow:hidden; border:1px solid rgba(255,255,255,.10); background: rgba(4,9,20,.80); }
+    .winbar { height: 42px; display:flex; align-items:center; gap: 8px; padding: 0 14px; border-bottom:1px solid rgba(255,255,255,.08); }
+    .dot { width:10px; height:10px; border-radius:50%; background:#ff5f57; } .dot:nth-child(2){ background:#ffbd2e; } .dot:nth-child(3){ background:#28c840; }
+    .screen { padding: 22px; }
+    .dropbox { border-radius: 26px; padding: 22px; background: linear-gradient(155deg, rgba(25,212,255,.17), rgba(139,92,246,.12)), rgba(255,255,255,.045); border:1px solid rgba(156,210,255,.18); }
+    .drop-head { display:grid; grid-template-columns: minmax(0, 1fr) 128px; gap: 14px; align-items:center; }
+    .dropbox h3 { margin:0; font-size: 28px; letter-spacing:-1px; }
+    .dropbox p { margin: 7px 0 0; color: var(--muted); line-height:1.48; }
+    .qrbox { display:grid; grid-template-columns: minmax(0,1fr) 72px; gap: 9px; align-items:center; padding: 10px; border-radius: 18px; background: rgba(4,9,20,.72); border:1px solid rgba(25,212,255,.18); }
+    .qrbox strong { display:block; font-size: 11px; } .qrbox span { display:block; margin-top:3px; color: var(--muted); font-size: 9.5px; font-weight: 800; }
+    .qrbox img { width: 72px; height:72px; border-radius: 11px; padding:4px; background:#fff; object-fit: contain; }
+    .input { height: 68px; margin-top: 18px; border-radius: 18px; display:flex; align-items:center; padding:0 16px; color:#86a0c0; font-weight: 900; background: rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.09); overflow:hidden; }
+    .modes { margin-top: 14px; display:grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
+    .mode { min-height: 78px; display:grid; place-items:center; text-align:center; border-radius: 17px; background: rgba(255,255,255,.055); border:1px solid rgba(255,255,255,.09); font-size: 20px; }
+    .mode b { display:block; margin-top: 5px; font-size: 11.5px; }
+    .engine { margin-top: 14px; display:flex; gap: 8px; flex-wrap:wrap; }
+    .engine span { padding:8px 10px; border-radius:999px; color:#b8ffdf; background: rgba(55,245,174,.10); border:1px solid rgba(55,245,174,.20); font-size: 12px; font-weight: 950; }
+    .phone .window { border-radius: 29px; }
+    .phone .screen { padding: 17px 13px; }
+    .phone-top { height: 20px; width: 72px; border-radius:999px; background: rgba(0,0,0,.46); margin: 0 auto 14px; }
+    .phone h4 { margin:0 0 12px; font-size: 18px; letter-spacing:-.5px; }
+    .phone-row { display:flex; justify-content:space-between; align-items:center; padding: 11px; margin: 8px 0; border-radius: 15px; background: rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.08); color:#ddecff; font-weight: 900; font-size: 12px; }
+    .phone-row i { width:9px; height:9px; border-radius:50%; background: var(--mint); box-shadow:0 0 16px var(--mint); }
+    .mini-card strong { display:block; font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing:.8px; }
+    .mini-card b { display:block; margin-top: 5px; font-size: 30px; letter-spacing:-1px; background: linear-gradient(135deg, #fff, #9cf1ff, #fff1a8); -webkit-background-clip:text; background-clip:text; color: transparent; }
+    .mini-card span { display:block; margin-top: 7px; color: var(--muted); line-height:1.45; font-weight: 800; }
+    .floaty { animation: floaty 5.4s ease-in-out infinite; } .floaty2 { animation: floaty 6.2s ease-in-out infinite reverse; }
+    @keyframes floaty { 0%,100%{ translate:0 0; } 50%{ translate:0 -14px; } }
+    section { padding: 82px 0; position: relative; }
+    .section-head { margin-bottom: 28px; }
+    .kicker { color: var(--cyan); font-size: 13px; font-weight: 950; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
+    h2 { margin:0; font-size: clamp(34px, 5vw, 64px); line-height:.94; letter-spacing:-2.4px; }
+    .section-head p { margin: 14px 0 0; color: var(--muted); max-width: 720px; line-height: 1.68; font-size: 17px; }
+    .metrics { display:grid; grid-template-columns: repeat(4,1fr); gap: 14px; }
+    .metric, .card, .workflow, .download-panel { opacity: 0; transform: translateY(28px) scale(.98); transition: opacity .7s ease, transform .7s cubic-bezier(.2,.8,.2,1), border-color .2s ease; }
+    .visible { opacity: 1; transform: translateY(0) scale(1); }
+    .metric { padding: 24px; border-radius: 28px; background: var(--panel); border:1px solid rgba(255,255,255,.10); box-shadow: inset 0 1px 0 rgba(255,255,255,.08); }
+    .metric b { display:block; font-size: 38px; letter-spacing:-1.5px; background: linear-gradient(135deg, #fff, #94efff, #fff1a8); -webkit-background-clip:text; background-clip:text; color:transparent; }
+    .metric span { display:block; margin-top: 6px; color: var(--muted); font-weight: 900; }
+    .cards { display:grid; grid-template-columns: repeat(4,1fr); gap: 16px; }
+    .card { min-height: 236px; padding: 24px; border-radius: 28px; background: linear-gradient(160deg, rgba(255,255,255,.09), rgba(255,255,255,.035)); border:1px solid rgba(255,255,255,.11); box-shadow: inset 0 1px 0 rgba(255,255,255,.08); }
+    .card:hover { border-color: rgba(25,212,255,.35); transform: translateY(-4px) scale(1); }
+    .card .icon { font-size: 34px; margin-bottom: 18px; }
+    .card h3 { margin:0 0 10px; font-size: 20px; letter-spacing:-.5px; }
+    .card p { margin:0; color: var(--muted); line-height:1.65; font-size: 14.5px; }
+    .scenes { display:grid; gap: 22px; }
+    .workflow { position: sticky; top: 96px; display:grid; grid-template-columns: .82fr 1.18fr; gap: 24px; align-items:center; min-height: 70vh; padding: 28px; border-radius: 38px; background: linear-gradient(135deg, rgba(25,212,255,.13), rgba(139,92,246,.10)), rgba(255,255,255,.045); border:1px solid rgba(255,255,255,.11); box-shadow: var(--shadow); backdrop-filter: blur(18px); }
+    .step-no { width: 54px; height:54px; display:grid; place-items:center; border-radius:18px; color:#06101d; font-weight: 950; background: linear-gradient(135deg, var(--cyan), var(--mint)); box-shadow:0 16px 50px rgba(25,212,255,.26); }
+    .workflow h3 { margin: 20px 0 12px; font-size: clamp(32px, 4vw, 56px); line-height:.95; letter-spacing:-2px; }
+    .workflow p { margin:0; color: var(--muted); line-height:1.72; font-size: 17px; }
+    .workflow-visual { min-height: 360px; position: relative; display:grid; place-items:center; overflow:hidden; border-radius: 28px; background: radial-gradient(circle at 50% 38%, rgba(25,212,255,.20), transparent 42%), rgba(3,7,16,.62); border:1px solid rgba(255,255,255,.08); }
+    .bubble { position:absolute; width: 160px; height:160px; border-radius:50%; background: radial-gradient(circle at 35% 25%, rgba(255,255,255,.82), rgba(25,212,255,.38) 20%, rgba(139,92,246,.16) 56%, transparent 70%); filter: blur(.2px); opacity:.8; }
+    .b1{ left:9%; top:15%; } .b2{ right:8%; bottom:10%; width:210px; height:210px; background: radial-gradient(circle at 35% 25%, rgba(255,255,255,.55), rgba(255,83,207,.28) 24%, rgba(139,92,246,.18) 55%, transparent 72%); }
+    .visual-card { position: relative; z-index:2; width:min(430px, 86%); padding: 22px; border-radius: 28px; background: rgba(7, 13, 29, .82); border:1px solid rgba(255,255,255,.12); box-shadow:0 24px 80px rgba(0,0,0,.42); }
+    .visual-card .line { height: 14px; border-radius:999px; margin: 12px 0; background: linear-gradient(90deg, rgba(25,212,255,.8), rgba(55,245,174,.55), transparent); }
+    .download-panel { display:grid; grid-template-columns: minmax(0,1fr) 330px; gap: 24px; align-items:center; padding: 34px; border-radius: 38px; background: linear-gradient(135deg, rgba(25,212,255,.24), rgba(139,92,246,.18)), rgba(255,255,255,.065); border:1px solid var(--line); box-shadow: var(--shadow), inset 0 1px 0 rgba(255,255,255,.08); }
+    .download-panel h2 { margin-bottom: 12px; }
+    .download-panel p { color: var(--muted); line-height:1.7; margin:0 0 18px; }
+    .download-list { display:grid; gap: 10px; }
+    .download-list a { display:flex; justify-content:space-between; gap: 16px; align-items:center; text-decoration:none; padding: 15px 16px; border-radius: 18px; background: rgba(255,255,255,.065); border:1px solid rgba(255,255,255,.10); font-weight: 950; }
+    .download-list span { color: var(--muted); font-size: 12px; font-weight: 850; }
+    .release-card { padding: 22px; border-radius: 28px; background: rgba(3,7,16,.55); border:1px solid rgba(255,255,255,.10); }
+    .release-card b { display:block; font-size: 42px; letter-spacing:-2px; background: linear-gradient(135deg,#fff,#92efff,#fff2ad); -webkit-background-clip:text; background-clip:text; color:transparent; }
+    .release-card span { color: var(--muted); line-height:1.55; display:block; margin-top:8px; }
+    .quote { padding: 56px 0 90px; text-align:center; }
+    .quote h2 { max-width: 980px; margin:0 auto; }
+    .float-cta { position: fixed; z-index:55; left:50%; bottom: 16px; transform: translateX(-50%); display:flex; gap: 10px; align-items:center; padding: 8px; border-radius:999px; background: rgba(5,9,21,.72); border:1px solid rgba(255,255,255,.13); backdrop-filter: blur(18px); box-shadow: 0 20px 80px rgba(0,0,0,.42); }
+    .float-cta small { color: var(--muted); font-weight: 950; padding-left: 10px; white-space: nowrap; }
+    @media (max-width: 980px) {
+      .hero { min-height: auto; padding-top: 54px; }
+      .hero-grid, .workflow, .download-panel { grid-template-columns: 1fr; }
+      .stage { min-height: 640px; margin-top: 18px; }
+      .workflow { position: relative; top: auto; min-height: auto; }
+      .metrics, .cards { grid-template-columns: repeat(2,1fr); }
+      h1 { font-size: clamp(54px, 13vw, 92px); }
+      .navlinks { display:none; }
     }
-    .app-card::before { content:""; position:absolute; width:280px; height:280px; border-radius:50%; right:-90px; top:-100px; background: radial-gradient(circle, rgba(24,199,255,.38), transparent 62%); }
-    .app-card::after { content:""; position:absolute; inset:auto 36px -20px 36px; height:40px; background: rgba(24,199,255,.36); filter: blur(34px); }
-    .window { position: relative; border-radius: 24px; background: rgba(4,10,20,.74); border: 1px solid rgba(255,255,255,.10); overflow: hidden; transform: translateZ(36px); }
-    .bar { height: 44px; display:flex; align-items:center; gap:8px; padding:0 15px; border-bottom:1px solid rgba(255,255,255,.08); }
-    .dot { width: 10px; height: 10px; border-radius: 50%; background: #ff5f57; } .dot:nth-child(2){background:#ffbd2e}.dot:nth-child(3){background:#28c840}
-    .screen { padding: 24px; }
-    .drop { border-radius: 24px; padding: 26px; background: linear-gradient(160deg, rgba(24,199,255,.16), rgba(124,58,237,.12)), rgba(255,255,255,.04); border:1px solid rgba(137,207,255,.16); }
-    .drop-head { display:grid; grid-template-columns: 1fr 150px; align-items:center; gap:18px; }
-    .drop h3 { margin:0; font-size:30px; letter-spacing:-1px; }
-    .drop p { color:var(--muted); margin:8px 0 0; line-height:1.5; }
-    .qrbox { display:grid; grid-template-columns: 1fr 86px; gap:10px; align-items:center; padding:12px; border-radius:20px; background:rgba(7,17,31,.82); border:1px solid rgba(24,199,255,.18); }
-    .qrbox strong { display:block; font-size:12px; } .qrbox span { display:block; color:var(--muted); font-size:10px; margin-top:3px; }
-    .qrbox img { width:86px; height:86px; padding:5px; border-radius:13px; background:#fff; object-fit: contain; }
-    .input { margin-top:20px; height:72px; border-radius:18px; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.08); display:flex; align-items:center; padding:0 18px; color:#8fa8c8; font-weight: 800; overflow: hidden; }
-    .modes { margin-top:14px; display:grid; grid-template-columns: repeat(5, 1fr); gap:8px; }
-    .mode { min-height:82px; border-radius:18px; padding:12px 8px; text-align:center; background:rgba(255,255,255,.055); border:1px solid rgba(255,255,255,.08); }
-    .mode b { display:block; margin-top:5px; font-size:12px; }
-    .engine { margin-top:14px; display:flex; gap:8px; flex-wrap:wrap; }
-    .engine span { padding:8px 10px; border-radius:999px; background:rgba(46,229,157,.10); color:#a7ffd8; border:1px solid rgba(46,229,157,.20); font-size:12px; font-weight:800; }
-
-    section { padding: 58px 0; }
-    .section-head { display:block; margin-bottom:24px; }
-    h2 { font-size: clamp(30px,4vw,48px); line-height:1; letter-spacing:-1.8px; margin:0; }
-    .section-head p { color:var(--muted); margin:12px 0 0; max-width:680px; line-height:1.6; }
-    .showcase { display:grid; grid-template-columns: repeat(4,1fr); gap:16px; padding: 14px 0 46px; }
-    .metric, .card { transform: translateY(0); opacity: 1; transition: transform .25s ease, border-color .25s ease, background .25s ease; }
-    .metric.visible, .card.visible, .workflow.visible, .download.visible { transform: translateY(0); opacity: 1; }
-    .metric { border-radius: 26px; padding: 24px; background: linear-gradient(160deg, rgba(255,255,255,.09), rgba(255,255,255,.035)); border:1px solid rgba(255,255,255,.12); box-shadow: inset 0 1px 0 rgba(255,255,255,.07); }
-    .metric b { display:block; font-size:34px; letter-spacing:-1.4px; background:linear-gradient(135deg,#fff,#87edff,#ffe08a); -webkit-background-clip:text; background-clip:text; color:transparent; }
-    .metric span { display:block; margin-top:6px; color:var(--muted); font-weight:800; }
-    .grid-4 { display:grid; grid-template-columns: repeat(4,1fr); gap:16px; }
-    .grid-3 { display:grid; grid-template-columns: repeat(3,1fr); gap:16px; }
-    .card { padding:24px; border-radius:24px; background:var(--card); border:1px solid rgba(255,255,255,.10); box-shadow: inset 0 1px 0 rgba(255,255,255,.06); height:100%; }
-    .card:hover { border-color: rgba(24,199,255,.26); background: rgba(16,31,57,.78); }
-    .card .icon { font-size:30px; line-height:1; margin-bottom:16px; }
-    .card h3 { margin:0 0 10px; font-size:19px; letter-spacing:-.4px; }
-    .card p { margin:0; color:var(--muted); line-height:1.6; font-size:14.5px; }
-    .proof { display:grid; grid-template-columns: 1.1fr .9fr; gap:16px; }
-    .checks { display:grid; gap:10px; }
-    .check { display:flex; justify-content:space-between; gap:18px; padding:14px 16px; border-radius:16px; background:rgba(255,255,255,.055); border:1px solid rgba(255,255,255,.08); }
-    .check b { font-size:14px; } .check span { color:var(--mint); font-weight:900; font-size:13px; }
-    .check.warn span { color:var(--warn); }
-    .evidence-btn { margin-top: 18px; cursor: pointer; width: 100%; }
-
-    .workflow { position: relative; transform: translateY(0); opacity: 1; transition: transform .25s ease, border-color .25s ease; border-radius: 32px; padding: 28px; background: linear-gradient(135deg, rgba(24,199,255,.12), rgba(124,58,237,.14)), rgba(255,255,255,.045); border: 1px solid rgba(255,255,255,.11); overflow: hidden; }
-    .workflow::before { content:""; position:absolute; inset: 22px 8% auto; height:2px; background: linear-gradient(90deg, transparent, rgba(24,199,255,.65), rgba(46,229,157,.55), transparent); }
-    .steps { display:grid; grid-template-columns: repeat(4, 1fr); gap:14px; position: relative; }
-    .step { padding: 20px; border-radius: 22px; background: rgba(4,10,20,.45); border:1px solid rgba(255,255,255,.1); min-height: 170px; }
-    .step-num { width: 42px; height: 42px; border-radius: 15px; display:grid; place-items:center; font-weight: 1000; color:#03101d; background: linear-gradient(135deg, #7ee7ff, var(--mint)); margin-bottom: 16px; box-shadow: 0 14px 40px rgba(24,199,255,.25); }
-    .step h3 { margin:0 0 10px; letter-spacing:-.5px; }
-    .step p { margin:0; color:var(--muted); line-height:1.55; font-size:14px; }
-
-    .download { transform: translateY(0); opacity:1; transition: transform .25s ease, border-color .25s ease; padding:34px; border-radius:32px; background: linear-gradient(135deg, rgba(24,199,255,.22), rgba(124,58,237,.18)), rgba(255,255,255,.06); border:1px solid var(--line); display:grid; grid-template-columns: 1fr auto; gap:24px; align-items:center; }
-    .download h2 { margin-bottom:10px; } .download p { color:var(--muted); margin:0; line-height:1.6; }
-    .platform-downloads { display:grid; grid-template-columns: repeat(4, minmax(150px, 1fr)); gap:10px; margin-top:18px; }
-    .platform-downloads a { text-decoration:none; padding:14px; border-radius:18px; background:rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.10); }
-    .platform-downloads a strong { display:block; font-size:14px; margin-bottom:5px; }
-    .platform-downloads a span { color:var(--muted); font-size:12px; font-weight:800; }
-    .dl-grid { display:grid; grid-template-columns: repeat(4, 1fr); gap:16px; }
-    .dl-card { display:flex; flex-direction:column; gap:12px; padding:24px; border-radius:26px; background:linear-gradient(180deg, rgba(255,255,255,.09), rgba(255,255,255,.035)); border:1px solid rgba(255,255,255,.12); box-shadow: inset 0 1px 0 rgba(255,255,255,.07); }
-    .dl-card .dl-os { font-size:17px; font-weight:900; letter-spacing:-.4px; }
-    .dl-card .dl-meta { color:#c3c7d6; font-size:13px; font-weight:800; margin-bottom:auto; }
-    .dl-card .btn { width:100%; }
-    @media (max-width:960px){ .dl-grid { grid-template-columns: repeat(2,1fr); } }
-    @media (max-width:640px){ .dl-grid { grid-template-columns: 1fr; } }
-    .faq { display:grid; gap:12px; }
-    details { border-radius:18px; background:rgba(255,255,255,.055); border:1px solid rgba(255,255,255,.08); padding:16px 18px; }
-    summary { cursor:pointer; font-weight:900; } details p { color:var(--muted); line-height:1.6; margin:12px 0 0; }
-    footer { padding:36px 0 54px; color:var(--muted); border-top:1px solid rgba(255,255,255,.08); }
-    .foot { display:flex; justify-content:space-between; gap:16px; flex-wrap:wrap; }
-
-    .float-cta { position: fixed; z-index: 18; right: 18px; bottom: 18px; display:flex; gap:10px; align-items:center; padding:10px; border-radius: 999px; background: rgba(4,10,20,.68); border: 1px solid rgba(255,255,255,.12); backdrop-filter: blur(18px); box-shadow: 0 18px 70px rgba(0,0,0,.32); }
-    .float-cta small { color: var(--muted); font-weight: 800; padding-left: 10px; }
-    .modal { position: fixed; inset:0; z-index: 50; display:none; place-items:center; padding: 22px; background: rgba(0,0,0,.62); backdrop-filter: blur(8px); }
-    .modal.open { display:grid; }
-    .modal-card { width:min(760px, 100%); border-radius: 30px; background: linear-gradient(160deg, rgba(11,22,43,.98), rgba(5,9,18,.98)); border:1px solid rgba(255,255,255,.14); box-shadow: 0 40px 140px rgba(0,0,0,.62); padding: 26px; }
-    .modal-head { display:flex; align-items:start; justify-content:space-between; gap:18px; margin-bottom: 18px; }
-    .modal h3 { margin:0; font-size: 28px; letter-spacing:-1px; }
-    .close { cursor:pointer; width: 42px; height:42px; border-radius:999px; border:1px solid rgba(255,255,255,.12); background:rgba(255,255,255,.07); color:#fff; font-size: 22px; }
-    .evidence-grid { display:grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
-    .evidence-grid div { padding: 14px; border-radius: 16px; background:rgba(255,255,255,.055); border:1px solid rgba(255,255,255,.08); }
-    .evidence-grid b { display:block; margin-bottom: 4px; }
-    .evidence-grid span { color: var(--muted); font-size: 13px; line-height: 1.45; }
-
-    @media (max-width: 960px) { .hero-grid,.proof,.download { grid-template-columns: 1fr; } .grid-4,.grid-3,.showcase,.steps,.platform-downloads { grid-template-columns: repeat(2,1fr); } .drop-head { grid-template-columns: 1fr; } .app-card { transform:none; } .workflow::before { display:none; } }
-    @media (max-width: 640px) { .wrap, .topbar { width:min(100% - 28px, 1180px); } .navlinks { display:none; } h1 { letter-spacing:-2px; } .grid-4,.grid-3,.showcase,.steps,.evidence-grid,.platform-downloads { grid-template-columns: 1fr; } .modes { grid-template-columns: repeat(2,1fr); } .download { padding:24px; } .btn { width:100%; } .float-cta small { display:none; } }
+    @media (max-width: 640px) {
+      .wrap { width: min(100% - 26px, 1160px); }
+      .topbar { width: min(100% - 20px, 1160px); top: 8px; }
+      .nav { height: 58px; }
+      .brand span { display:none; }
+      .nav .btn { min-height: 40px; padding: 0 13px; font-size: 13px; }
+      .hero { padding: 44px 0 54px; }
+      h1 { letter-spacing: -3px; }
+      .lead { font-size: 16.5px; }
+      .hero-actions .btn { width: 100%; }
+      .stage { min-height: 555px; }
+      .laptop { left: 0; right: 0; top: 18px; min-height: 356px; padding: 12px; border-radius: 28px; transform: rotateY(-4deg) rotateX(2deg); }
+      .screen { padding: 15px; }
+      .dropbox { padding: 16px; }
+      .drop-head { grid-template-columns: 1fr; }
+      .qrbox { grid-template-columns: minmax(0,1fr) 70px; }
+      .modes { grid-template-columns: repeat(2,1fr); }
+      .phone { width: 142px; min-height: 286px; right: -2px; bottom: 4px; border-radius: 32px; }
+      .mini-card { width: 196px; left: -4px; bottom: 34px; padding: 15px; }
+      .metrics, .cards { grid-template-columns: 1fr; }
+      section { padding: 58px 0; }
+      .workflow, .download-panel { padding: 20px; border-radius: 28px; }
+      .workflow-visual { min-height: 290px; }
+      .download-panel { gap: 16px; }
+      .float-cta small { display:none; }
+      .float-cta { width: calc(100% - 26px); justify-content:center; }
+      .float-cta .btn { flex:1; }
+    }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior:auto !important; } }
   </style>
 </head>
 <body>
-  <div class="topbar">
-    <nav class="nav">
-      <div class="brand"><img src="static/ducdrop-logo.png" alt="DucDrop logo" /><span>DucDrop</span></div>
-      <div class="navlinks"><a href="#features">Tính năng</a><a href="#workflow">Workflow</a><a href="#proof">Đã test</a><a href="#download">Tải app</a></div>
-      <a class="btn primary" href="#download">Tải Windows</a>
-    </nav>
-  </div>
+  <div class="progress" aria-hidden="true"><span id="progressBar"></span></div>
+  <div class="aurora" aria-hidden="true"></div>
 
-  <div class="wrap">
-    <main class="hero">
-      <div class="hero-grid">
+  <header class="topbar">
+    <nav class="nav" aria-label="DucDrop navigation">
+      <a class="brand" href="#top">
+        <img src="static/ducdrop-logo.png" alt="DucDrop" />
+        <div><strong>DucDrop</strong><span>v1.1.3 • Windows ready</span></div>
+      </a>
+      <div class="navlinks"><a href="#features">Tính năng</a><a href="#workflow">Workflow</a><a href="#proof">Proof</a></div>
+      <a class="btn primary" href="https://github.com/bktimmy247/ducdrop/releases/download/v1.1.3/DucDrop_1.1.3_x64-setup.exe">Tải Windows</a>
+    </nav>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="wrap hero-grid">
         <div>
-          <div class="eyebrow">⚡ DucDrop v1.1.3 • Windows app đã test tải thật</div>
-          <h1><span class="grad">Drop link.</span><br/>Lấy video ngay.</h1>
-          <p class="lead">DucDrop biến việc tải video thành một thao tác gọn như kéo-thả: video, audio, thumbnail, subtitle và playlist/kênh trong một app Windows đẹp, nhẹ, dễ dùng.</p>
+          <div class="eyebrow">⚡ DucDrop v1.1.3 • app tải video đã test thật</div>
+          <h1><span class="grad">Thả link.</span><br />Lấy video ngay.</h1>
+          <p class="lead">Một app Windows gọn mà nhìn là biết dùng: dán link YouTube/Facebook public, chọn Video, Audio, Thumbnail, Subtitle hoặc Tất cả — file tự về <b>Downloads/DucDrop</b>.</p>
           <div class="hero-actions">
-            <a class="btn primary" href="#download">⬇ Tải DucDrop v1.1.3</a>
-            <a class="btn" href="https://zalo.me/g/6mkvta67ijedc8abfgsc" target="_blank" rel="noreferrer">Tham gia nhóm Zalo</a>
+            <a class="btn primary" href="https://github.com/bktimmy247/ducdrop/releases/download/v1.1.3/DucDrop_1.1.3_x64-setup.exe">⬇ Tải DucDrop 1.1.3</a>
+            <a class="btn" href="#workflow">Xem cách chạy</a>
           </div>
-          <div class="mini-proof"><span class="pill">YouTube playlist pass</span><span class="pill">Facebook public pass</span><span class="pill">MP4 H.264/AAC</span></div>
+          <div class="mini-proof"><span class="pill">YouTube playlist pass</span><span class="pill">Facebook public pass</span><span class="pill">Có nút Dừng thật</span></div>
         </div>
 
-        <div class="app-card tilt" aria-label="DucDrop app mockup">
-          <div class="window">
-            <div class="bar"><i class="dot"></i><i class="dot"></i><i class="dot"></i></div>
-            <div class="screen">
-              <div class="drop">
-                <div class="drop-head">
-                  <div><h3>Thả link vào đây</h3><p>Dán một link hoặc nhiều link, mỗi dòng một link.</p></div>
-                  <div class="qrbox"><div><strong>Cường Đức Agentic</strong><span>Quét QR vào nhóm Zalo</span></div><img src="static/cuong-duc-zalo-qr.png" alt="QR Zalo" /></div>
+        <div class="stage" id="stage" aria-label="DucDrop animated product mockup">
+          <div class="orbit" aria-hidden="true"></div>
+          <div class="device laptop floaty" data-depth="18">
+            <div class="window">
+              <div class="winbar"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+              <div class="screen">
+                <div class="dropbox">
+                  <div class="drop-head">
+                    <div><h3>Thả link vào đây</h3><p>Dán một link hoặc nhiều link, mỗi dòng một link.</p></div>
+                    <div class="qrbox"><div><strong>Cường Đức Agentic</strong><span>Quét QR vào nhóm Zalo</span></div><img src="static/cuong-duc-zalo-qr.png" alt="QR Zalo" /></div>
+                  </div>
+                  <div class="input">https://youtube.com/playlist?list=...</div>
+                  <div class="modes"><div class="mode">🎬<b>Video</b></div><div class="mode">🎧<b>Audio</b></div><div class="mode">🖼<b>Thumb</b></div><div class="mode">📝<b>Sub</b></div><div class="mode">📚<b>Tất cả</b></div></div>
+                  <div class="engine"><span>yt-dlp ready</span><span>ffmpeg ready</span><span>smart folders</span></div>
                 </div>
-                <div class="input">https://youtube.com/playlist?list=...</div>
-                <div class="modes"><div class="mode">🎬<b>Video</b></div><div class="mode">🎧<b>Audio</b></div><div class="mode">🖼<b>Thumbnail</b></div><div class="mode">📝<b>Subtitle</b></div><div class="mode">📚<b>Tất cả</b></div></div>
-                <div class="engine"><span>yt-dlp ready</span><span>ffmpeg ready</span><span>Smart folders</span></div>
               </div>
             </div>
           </div>
-        </div>
-      </div>
-    </main>
-
-    <section class="showcase">
-      <div class="metric"><b>5</b><span>chế độ tải</span></div>
-      <div class="metric"><b>44MB</b><span>installer gọn</span></div>
-      <div class="metric"><b>H.264</b><span>MP4 dễ mở</span></div>
-      <div class="metric"><b>0 cmd</b><span>không cần mò lệnh</span></div>
-    </section>
-
-    <section id="features">
-      <div class="section-head"><h2>Mở app là dùng.</h2><p>Không bắt người dùng hiểu format, codec, command line hay cài thêm công cụ lặt vặt.</p></div>
-      <div class="grid-4">
-        <article class="card tilt"><div class="icon">🎬</div><h3>Tải video</h3><p>Ưu tiên MP4 H.264/AAC để mở được trên trình phát phổ biến.</p></article>
-        <article class="card tilt"><div class="icon">🎧</div><h3>Tách audio</h3><p>Tải riêng phần nghe thành MP3 cho podcast, nhạc, bài học.</p></article>
-        <article class="card tilt"><div class="icon">🖼</div><h3>Lấy thumbnail</h3><p>Tải ảnh thumbnail nhanh, tự convert sang JPG dễ dùng.</p></article>
-        <article class="card tilt"><div class="icon">📚</div><h3>Tải playlist</h3><p>Mode “Tất cả” tải playlist/kênh và tự xếp thư mục theo nền tảng, tác giả, số thứ tự.</p></article>
-      </div>
-    </section>
-
-    <section id="workflow">
-      <div class="section-head"><h2>Workflow nhìn là hiểu.</h2><p>Từ một đường link rối rắm đến file MP4/MP3/thumbnail/subtitle đã nằm gọn trong Downloads chỉ qua vài bước.</p></div>
-      <div class="workflow">
-        <div class="steps">
-          <article class="step"><div class="step-num">1</div><h3>Dán link</h3><p>YouTube, Facebook public hoặc playlist. Nhiều link thì mỗi dòng một link.</p></article>
-          <article class="step"><div class="step-num">2</div><h3>Chọn mode</h3><p>Video, Audio, Thumbnail, Subtitle hoặc Tất cả cho playlist/bộ nội dung.</p></article>
-          <article class="step"><div class="step-num">3</div><h3>Engine xử lý</h3><p>yt-dlp tải nguồn, ffmpeg merge/convert để file dễ mở trên Windows.</p></article>
-          <article class="step"><div class="step-num">4</div><h3>Lấy file</h3><p>Kết quả nằm trong Downloads/DucDrop, tự đặt tên và phân thư mục gọn.</p></article>
+          <div class="device phone floaty2" data-depth="34">
+            <div class="window"><div class="screen"><div class="phone-top"></div><h4>Queue sống</h4><div class="phone-row"><span>Video 74%</span><i></i></div><div class="phone-row"><span>Dừng lệnh</span><i></i></div><div class="phone-row"><span>Xóa queue</span><i></i></div><div class="phone-row"><span>MP4 ready</span><i></i></div></div></div>
+          </div>
+          <div class="device mini-card floaty" data-depth="26"><strong>Windows installer</strong><b>46MB</b><span>Gọn, có engine đi kèm. Không bắt người dùng cài command line.</span></div>
         </div>
       </div>
     </section>
 
     <section id="proof">
-      <div class="section-head"><h2>Đã test tải thật.</h2><p>Không chỉ build pass. DucDrop được test bằng chính yt-dlp/ffmpeg bundle trong app.</p></div>
-      <div class="proof">
-        <div class="card checks">
-          <div class="check"><b>YouTube video</b><span>PASS • MP4 H.264/AAC</span></div>
-          <div class="check"><b>YouTube playlist / Tất cả</b><span>PASS • 2 items merged</span></div>
-          <div class="check"><b>YouTube audio</b><span>PASS • MP3</span></div>
-          <div class="check"><b>YouTube thumbnail</b><span>PASS • JPG</span></div>
-          <div class="check"><b>YouTube subtitle</b><span>PASS • SRT English</span></div>
-          <div class="check"><b>Facebook public</b><span>PASS • MP4 H.264/AAC</span></div>
-          <div class="check warn"><b>TikTok public</b><span>IP/platform dependent</span></div>
+      <div class="wrap">
+        <div class="metrics">
+          <div class="metric reveal"><b>5</b><span>chế độ tải</span></div>
+          <div class="metric reveal"><b>0</b><span>lệnh terminal</span></div>
+          <div class="metric reveal"><b>MP4</b><span>H.264/AAC dễ mở</span></div>
+          <div class="metric reveal"><b>Kill</b><span>dừng tiến trình thật</span></div>
         </div>
-        <div class="card"><div class="icon">🧪</div><h3>Fix quan trọng ở v1.1.3</h3><p>yt-dlp giờ nhận đúng ffmpeg sidecar nên video/audio được merge thành MP4 thật, không còn tải rời file hình và file tiếng. Subtitle cũng tránh tải toàn bộ ngôn ngữ để không bị YouTube 429. Dừng/xóa lệnh tải ở bản Windows 1.1.3 sẽ kill tiến trình thật, không còn tải nền sau khi xóa danh sách.</p><button class="btn evidence-btn" id="openEvidence">Xem evidence test</button></div>
+      </div>
+    </section>
+
+    <section id="features">
+      <div class="wrap">
+        <div class="section-head reveal"><div class="kicker">Tính năng</div><h2>Không cần hiểu codec.<br />Không cần mò lệnh.</h2><p>DucDrop giấu phần phức tạp phía sau một giao diện rõ ràng: người dùng chỉ cần biết mình muốn lấy video, audio, thumbnail, subtitle hay toàn bộ playlist.</p></div>
+        <div class="cards">
+          <article class="card reveal"><div class="icon">🎬</div><h3>Tải video</h3><p>Ưu tiên MP4 H.264/AAC để file mở ổn trên trình phát phổ biến.</p></article>
+          <article class="card reveal"><div class="icon">🎧</div><h3>Tách audio</h3><p>Lấy riêng phần nghe thành MP3 cho bài học, podcast, nhạc hoặc review.</p></article>
+          <article class="card reveal"><div class="icon">🖼</div><h3>Lấy thumbnail</h3><p>Tải ảnh thumbnail nhanh, convert sang JPG, tiện cho bài đăng hoặc tư liệu.</p></article>
+          <article class="card reveal"><div class="icon">⏹</div><h3>Dừng & xóa thật</h3><p>Bản 1.1.3 dừng yt-dlp/ffmpeg thật khi xóa queue, không còn tải nền sau lưng.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section id="workflow">
+      <div class="wrap scenes">
+        <article class="workflow reveal">
+          <div><div class="step-no">01</div><h3>Dán link vào một khung.</h3><p>YouTube, Facebook public, playlist hoặc nhiều link — mỗi dòng một link. Không phải nhớ tham số, không phải mở terminal.</p></div>
+          <div class="workflow-visual"><span class="bubble b1"></span><span class="bubble b2"></span><div class="visual-card"><b>Paste URL</b><div class="line"></div><div class="line" style="width:72%"></div><div class="line" style="width:44%"></div></div></div>
+        </article>
+        <article class="workflow reveal">
+          <div><div class="step-no">02</div><h3>Chọn đúng thứ cần lấy.</h3><p>Video, audio, thumbnail, subtitle hoặc Tất cả. Các mode hiện như những nút lớn, dễ bấm trên màn hình nhỏ.</p></div>
+          <div class="workflow-visual"><span class="bubble b1"></span><span class="bubble b2"></span><div class="visual-card"><b>Pick mode</b><div class="modes"><div class="mode">🎬<b>Video</b></div><div class="mode">🎧<b>Audio</b></div><div class="mode">🖼<b>Thumb</b></div><div class="mode">📚<b>All</b></div></div></div></div>
+        </article>
+        <article class="workflow reveal">
+          <div><div class="step-no">03</div><h3>Đang tải thì vẫn kiểm soát được.</h3><p>Nút Dừng, Xóa lệnh và Dừng & xóa danh sách xử lý cả UI lẫn tiến trình thật. Không còn cảnh xóa danh sách mà link cũ vẫn chạy tới 100%.</p></div>
+          <div class="workflow-visual"><span class="bubble b1"></span><span class="bubble b2"></span><div class="visual-card"><b>Queue control</b><div class="phone-row"><span>Downloading 68%</span><i></i></div><div class="phone-row"><span>Stop process</span><i></i></div><div class="phone-row"><span>Clear queue</span><i></i></div></div></div>
+        </article>
       </div>
     </section>
 
     <section id="download">
-      <div class="section-head"><h2>Tải DucDrop v1.1.3</h2><p>Chọn đúng hệ điều hành của anh/chị rồi bấm Tải. Mỗi nền tảng có nút tải riêng.</p></div>
-      <div class="dl-grid">
-        <div class="dl-card">
-          <div class="dl-os">🪟 Windows x64</div>
-          <div class="dl-meta">EXE installer • 46.5 MB</div>
-          <a class="btn primary" href="https://github.com/bktimmy247/ducdrop/releases/download/v1.1.3/DucDrop_1.1.3_x64-setup.exe" download>⬇ Tải cho Windows</a>
-        </div>
-        <div class="dl-card">
-          <div class="dl-os"> macOS Apple Silicon</div>
-          <div class="dl-meta">DMG • 66.9 MB</div>
-          <a class="btn primary" href="https://github.com/bktimmy247/ducdrop/releases/download/v1.1.2/DucDrop_1.1.2_aarch64.dmg" download>⬇ Tải cho macOS</a>
-        </div>
-        <div class="dl-card">
-          <div class="dl-os">🐧 Linux x64 (AppImage)</div>
-          <div class="dl-meta">AppImage • 146.9 MB</div>
-          <a class="btn primary" href="https://github.com/bktimmy247/ducdrop/releases/download/v1.1.2/DucDrop_1.1.2_amd64.AppImage" download>⬇ Tải AppImage</a>
-        </div>
-        <div class="dl-card">
-          <div class="dl-os">🐧 Linux Debian/Ubuntu</div>
-          <div class="dl-meta">DEB • 72.2 MB</div>
-          <a class="btn primary" href="https://github.com/bktimmy247/ducdrop/releases/download/v1.1.2/DucDrop_1.1.2_amd64.deb" download>⬇ Tải bản .deb</a>
+      <div class="wrap">
+        <div class="download-panel reveal">
+          <div>
+            <div class="kicker">Download</div>
+            <h2>Tải DucDrop v1.1.3</h2>
+            <p>Bản Windows mới đã có hotfix dừng/xóa lệnh tải thật và layout QR/Zalo nằm cố định trong card thả link, không che các nút tải.</p>
+            <div class="hero-actions"><a class="btn primary" href="https://github.com/bktimmy247/ducdrop/releases/download/v1.1.3/DucDrop_1.1.3_x64-setup.exe">⬇ Tải cho Windows</a><a class="btn" href="https://github.com/bktimmy247/ducdrop/releases/tag/v1.1.3">Xem release</a></div>
+            <div class="download-list"><a href="https://github.com/bktimmy247/ducdrop/releases/download/v1.1.2/DucDrop_1.1.2_aarch64.dmg"><strong>macOS Apple Silicon</strong><span>v1.1.2</span></a><a href="https://github.com/bktimmy247/ducdrop/releases/download/v1.1.2/DucDrop_1.1.2_amd64.AppImage"><strong>Linux AppImage</strong><span>v1.1.2</span></a></div>
+          </div>
+          <div class="release-card"><b>1.1.3</b><span>Hotfix Windows: cancel controls, process kill, QR card fixed inside the drop-card layout.</span></div>
         </div>
       </div>
     </section>
 
-    <section>
-      <div class="section-head"><h2>FAQ ngắn.</h2><p>Nói trước các điểm dễ gặp để khách đỡ hoang mang.</p></div>
-      <div class="faq">
-        <details open><summary>Vì sao Windows hiện cảnh báo?</summary><p>App chưa ký code signing nên Windows SmartScreen có thể hỏi xác nhận lần đầu. Đây là cảnh báo thường gặp với app mới, không phải app hỏng.</p></details>
-        <details><summary>TikTok có tải được không?</summary><p>Tùy link và IP. Một số IP bị TikTok chặn extractor. DucDrop sẽ báo lỗi rõ thay vì báo thành công giả.</p></details>
-        <details><summary>Có tải video private/cần đăng nhập không?</summary><p>Không đảm bảo ở bản hiện tại. DucDrop ưu tiên link public, dễ dùng, không yêu cầu khách cấu hình cookie.</p></details>
-      </div>
-    </section>
+    <section class="quote"><div class="wrap reveal"><h2><span class="grad">DucDrop không bán sự phức tạp.</span><br />Nó bán cảm giác: “dán link là xong”.</h2></div></section>
+  </main>
 
-    <footer><div class="foot"><span>© Cường Đức Agentic • DucDrop</span><span>Nhẹ, gọn, dành cho người chỉ muốn tải xong việc.</span></div></footer>
-  </div>
-
-  <div class="float-cta"><small>DucDrop v1.1.3</small><a class="btn primary" href="#download">Tải ngay</a></div>
-
-  <div class="modal" id="evidenceModal" aria-hidden="true">
-    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="evidenceTitle">
-      <div class="modal-head"><div><h3 id="evidenceTitle">Evidence test tải thật</h3><p class="lead" style="font-size:16px;margin:8px 0 0">Bản smoke test trước khi build installer v1.1.3.</p></div><button class="close" id="closeEvidence" aria-label="Đóng">×</button></div>
-      <div class="evidence-grid">
-        <div><b>YouTube video</b><span>MP4 merged, H.264 + AAC.</span></div>
-        <div><b>YouTube audio</b><span>MP3 output.</span></div>
-        <div><b>Playlist / Tất cả</b><span>2 item, folder/số thứ tự đúng.</span></div>
-        <div><b>Subtitle</b><span>SRT English; tránh tải all language để giảm 429.</span></div>
-        <div><b>Facebook public</b><span>MP4 H.264 + AAC.</span></div>
-        <div><b>TikTok</b><span>IP/platform dependent; không claim pass ảo.</span></div>
-      </div>
-    </div>
-  </div>
+  <div class="float-cta"><small>DucDrop v1.1.3</small><a class="btn primary" href="https://github.com/bktimmy247/ducdrop/releases/download/v1.1.3/DucDrop_1.1.3_x64-setup.exe">Tải Windows</a></div>
 
   <script>
-    (function(){
-      const base = 'https://github.com/bktimmy247/ducdrop/releases/download/';
-      const files = {
-        'v1.1.3': {
-          win: 'DucDrop_1.1.3_x64-setup.exe',
-          mac: 'DucDrop_1.1.2_aarch64.dmg',
-          'linux-appimage': 'DucDrop_1.1.2_amd64.AppImage',
-          'linux-deb': 'DucDrop_1.1.2_amd64.deb'
-        }
-      };
-      const labels = { win:'Windows x64', mac:'macOS Apple Silicon', 'linux-appimage':'Linux x64 AppImage', 'linux-deb':'Linux DEB' };
-      const verSel = document.getElementById('verSelect');
-      const osSel = document.getElementById('osSelect');
-      const btn = document.getElementById('downloadBtn');
-      const note = document.getElementById('pickerNote');
-      function detectOS(){
-        const p = (navigator.userAgentData && navigator.userAgentData.platform || navigator.platform || navigator.userAgent).toLowerCase();
-        if (p.includes('mac')) return 'mac';
-        if (p.includes('linux') || p.includes('x11')) return 'linux-appimage';
-        return 'win';
+    const progress = document.getElementById('progressBar');
+    const stage = document.getElementById('stage');
+    const movers = [...document.querySelectorAll('[data-depth]')];
+    const reveals = [...document.querySelectorAll('.reveal')];
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function onScroll() {
+      const max = document.documentElement.scrollHeight - innerHeight;
+      const pct = max > 0 ? (scrollY / max) * 100 : 0;
+      progress.style.width = pct + '%';
+      if (!reduce && stage) {
+        const r = stage.getBoundingClientRect();
+        const center = (r.top + r.height / 2 - innerHeight / 2) / innerHeight;
+        movers.forEach((el) => {
+          const depth = Number(el.dataset.depth || 10);
+          el.style.setProperty('--scroll-y', `${center * depth}px`);
+          el.style.translate = `0 ${center * depth}px`;
+        });
       }
-      function update(){
-        const ver = verSel.value, os = osSel.value;
-        const file = files[ver] && files[ver][os];
-        if (!file) return;
-        btn.href = base + ver + '/' + file;
-        note.textContent = 'Đã chọn: ' + labels[os] + ' • ' + ver;
-      }
-      if (verSel && osSel && btn){
-        osSel.value = detectOS();
-        verSel.addEventListener('change', update);
-        osSel.addEventListener('change', update);
-        update();
-      }
-    })();
-    const revealTargets = document.querySelectorAll('.metric, .card, .workflow, .download');
-    const observer = new IntersectionObserver((entries) => {
+    }
+    addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+
+    const io = new IntersectionObserver((entries) => {
       entries.forEach((entry) => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
-    }, { threshold: 0.14 });
-    revealTargets.forEach((el) => observer.observe(el));
+    }, { threshold: .16, rootMargin: '0px 0px -8% 0px' });
+    reveals.forEach((el, i) => { el.style.transitionDelay = Math.min(i % 4 * 80, 240) + 'ms'; io.observe(el); });
 
-    document.querySelectorAll('.tilt').forEach((el) => {
-      el.addEventListener('mousemove', (event) => {
-        const rect = el.getBoundingClientRect();
-        const x = (event.clientX - rect.left) / rect.width - .5;
-        const y = (event.clientY - rect.top) / rect.height - .5;
-        el.style.transform = `perspective(1100px) rotateY(${x * 8}deg) rotateX(${-y * 8}deg) translateY(-2px)`;
+    if (!reduce && stage) {
+      stage.addEventListener('pointermove', (e) => {
+        const rect = stage.getBoundingClientRect();
+        const x = (e.clientX - rect.left) / rect.width - .5;
+        const y = (e.clientY - rect.top) / rect.height - .5;
+        stage.style.transform = `rotateY(${x * 4}deg) rotateX(${-y * 3}deg)`;
       });
-      el.addEventListener('mouseleave', () => { el.style.transform = ''; });
-    });
-
-    const modal = document.getElementById('evidenceModal');
-    const openBtn = document.getElementById('openEvidence');
-    const closeBtn = document.getElementById('closeEvidence');
-    function openModal(){ modal.classList.add('open'); modal.setAttribute('aria-hidden', 'false'); }
-    function closeModal(){ modal.classList.remove('open'); modal.setAttribute('aria-hidden', 'true'); }
-    openBtn?.addEventListener('click', openModal);
-    closeBtn?.addEventListener('click', closeModal);
-    modal?.addEventListener('click', (event) => { if (event.target === modal) closeModal(); });
-    window.addEventListener('keydown', (event) => { if (event.key === 'Escape') closeModal(); });
+      stage.addEventListener('pointerleave', () => { stage.style.transform = ''; });
+    }
   </script>
 </body>
 </html>
