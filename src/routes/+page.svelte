@@ -253,7 +253,12 @@
   }
 
   async function reveal(item: DownloadProgress) {
-    if (item.filepath) await openFolder(item.filepath);
+    if (item.filepath) {
+      await openFolder(item.filepath);
+      return;
+    }
+    await openDownloadsDir();
+    showToast("Chưa có đường dẫn file riêng, em mở thư mục DucDrop.", "info");
   }
 
   async function openDownloadsDir() {
@@ -357,8 +362,8 @@
       <button class="ghost" disabled={updating} onclick={runUpdate} title="Tải và cài bản DucDrop mới nhất">
         ⬆️ {updating ? "Đang cập nhật..." : "Cập nhật"}
       </button>
-      <button class="ghost" onclick={openDownloadsDir} title={ctas.openFolder}>
-        📂 {ctas.openFolder}
+      <button class="ghost" onclick={openDownloadsDir} title="Mở thư mục Downloads\\DucDrop">
+        📂 Mở thư mục tải
       </button>
     </div>
   </header>
@@ -505,7 +510,7 @@
               {/if}
               {#if item.status === "completed"}
                 <button class="secondary small" onclick={() => reveal(item)}>
-                  {ctas.openFolder}
+                  Mở file tải
                 </button>
               {/if}
               <button class="ghost small" onclick={() => removeItem(item)}>Xóa lệnh</button>

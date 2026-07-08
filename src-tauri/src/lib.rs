@@ -283,15 +283,19 @@ fn open_folder(path: String) -> Result<(), String> {
     let p = PathBuf::from(&path);
     #[cfg(target_os = "windows")]
     {
-        let arg = if p.is_file() {
-            format!("/select,\"{}\"", p.to_string_lossy())
+        if p.is_file() {
+            std::process::Command::new("explorer")
+                .arg("/select,")
+                .arg(p.to_string_lossy().to_string())
+                .spawn()
+                .map_err(|e| e.to_string())?;
         } else {
-            p.to_string_lossy().to_string()
-        };
-        std::process::Command::new("explorer")
-            .arg(arg)
-            .spawn()
-            .map_err(|e| e.to_string())?;
+            let target = if p.exists() { p } else { downloads_dir() };
+            std::process::Command::new("explorer")
+                .arg(target.to_string_lossy().to_string())
+                .spawn()
+                .map_err(|e| e.to_string())?;
+        }
     }
     #[cfg(target_os = "macos")]
     {
@@ -318,6 +322,14 @@ fn open_folder(path: String) -> Result<(), String> {
             .map_err(|e| e.to_string())?;
     }
     Ok(())
+}
+
+
+fn normalize_download_path(out_dir: &PathBuf, raw: &str) -> String {
+    let cleaned = raw.trim().trim_matches('"');
+    let p = PathBuf::from(cleaned);
+    let candidate = if p.is_absolute() { p } else { out_dir.join(p) };
+    candidate.to_string_lossy().to_string()
 }
 
 fn mode_args(mode: &str) -> Vec<String> {
@@ -680,15 +692,14 @@ async fn start_download(app: AppHandle, url: String, mode: String) -> Result<Str
 
     while let Ok(Some(line)) = reader.next_line().await {
         if let Some(rest) = line.strip_prefix("[download] Destination: ") {
-            last_file = Some(rest.trim().to_string());
+            last_file = Some(normalize_download_path(&out_dir, rest));
             if title.is_empty() {
                 if let Some(name) = PathBuf::from(rest.trim()).file_stem() {
                     title = name.to_string_lossy().to_string();
                 }
             }
         } else if let Some(rest) = line.strip_prefix("[Merger] Merging formats into ") {
-            let f = rest.trim().trim_matches('"').to_string();
-            last_file = Some(f);
+            last_file = Some(normalize_download_path(&out_dir, rest));
         } else if line.contains("There are no subtitles") || line.contains("has no subtitles") {
             no_subtitles = true;
         }
