@@ -8,6 +8,9 @@
   <meta name="theme-color" content="#070b18" />
   <meta property="og:title" content="DucDrop v1.1.4 — Drop link. Lấy video ngay." />
   <meta property="og:description" content="Một app Windows gọn, đẹp, có yt-dlp + ffmpeg sẵn. Dán link, chọn mode, file về Downloads/DucDrop." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800;900&display=swap" rel="stylesheet" />
   <style>
     :root {
       --bg: #060814;
@@ -27,7 +30,7 @@
       --danger: #ff5572;
       --shadow: 0 32px 120px rgba(0,0,0,.52);
       --radius: 30px;
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-family: Manrope, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
     * { box-sizing: border-box; }
     html { scroll-behavior: smooth; background: var(--bg); }
@@ -87,8 +90,8 @@
     }
     .nav { height: 62px; display:flex; align-items:center; justify-content:space-between; gap: 14px; padding: 0 9px 0 14px; }
     .brand { display:flex; align-items:center; gap: 12px; text-decoration:none; min-width: 0; }
-    .brand img { width: 42px; height:42px; border-radius: 15px; padding: 7px; background: rgba(255,255,255,.08); border:1px solid var(--line); box-shadow: 0 10px 34px rgba(25,212,255,.22); }
-    .brand strong { display:block; font-size: 15px; letter-spacing: -.2px; }
+    .brand img { width: 44px; height:44px; border-radius: 15px; padding: 7px; background: rgba(255,255,255,.08); border:1px solid var(--line); box-shadow: 0 10px 34px rgba(25,212,255,.22); }
+    .brand strong { display:block; font-size: 21px; letter-spacing: -.7px; font-weight: 900; }
     .brand span { display:block; color: var(--muted); font-size: 11px; font-weight: 800; margin-top: 2px; white-space: nowrap; }
     .navlinks { display:flex; align-items:center; gap: 18px; color: var(--muted); font-size: 13px; font-weight: 900; }
     .navlinks a { text-decoration:none; transition: color .2s ease; }
@@ -108,7 +111,7 @@
     .hero { min-height: calc(100vh - 74px); display:grid; align-items:center; padding: 66px 0 76px; position: relative; }
     .hero-grid { display:grid; grid-template-columns: minmax(0, .94fr) minmax(360px, 1.06fr); gap: 42px; align-items:center; }
     .eyebrow { display:inline-flex; align-items:center; gap: 9px; padding: 8px 12px; border-radius:999px; border:1px solid rgba(25,212,255,.24); background: rgba(25,212,255,.10); color:#d8faff; font-size: 13px; font-weight: 950; box-shadow: inset 0 1px 0 rgba(255,255,255,.08); }
-    h1 { margin: 22px 0 18px; font-size: clamp(56px, 8vw, 108px); line-height: .84; letter-spacing: -5.2px; max-width: 760px; }
+    h1 { margin: 22px 0 18px; font-size: clamp(56px, 8vw, 108px); line-height: .88; letter-spacing: -4.8px; max-width: 760px; font-weight: 900; }
     .grad { background: linear-gradient(135deg, #fff 0%, #a5efff 34%, #d1bdff 66%, #fff3bf 100%); -webkit-background-clip:text; background-clip:text; color:transparent; }
     .lead { margin: 0 0 28px; color: var(--muted); font-size: clamp(17px, 2vw, 21px); line-height: 1.72; max-width: 640px; }
     .hero-actions { display:flex; gap: 12px; flex-wrap: wrap; margin-bottom: 18px; }
@@ -148,6 +151,21 @@
     .mini-card strong { display:block; font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing:.8px; }
     .mini-card b { display:block; margin-top: 5px; font-size: 30px; letter-spacing:-1px; background: linear-gradient(135deg, #fff, #9cf1ff, #fff1a8); -webkit-background-clip:text; background-clip:text; color: transparent; }
     .mini-card span { display:block; margin-top: 7px; color: var(--muted); line-height:1.45; font-weight: 800; }
+
+    .site-footer { padding: 72px 0 32px; border-top: 1px solid rgba(180,196,255,.12); background: linear-gradient(180deg, rgba(7,10,30,.18), rgba(4,5,18,.88)); }
+    .footer-wrap { display:grid; gap: 38px; }
+    .footer-brand { max-width: 520px; }
+    .footer-logo { display:inline-flex; align-items:center; gap: 13px; text-decoration:none; }
+    .footer-logo img { width: 46px; height:46px; border-radius: 15px; padding: 7px; background: rgba(255,255,255,.07); border:1px solid rgba(180,196,255,.16); box-shadow: 0 0 34px rgba(116,143,255,.20); }
+    .footer-logo strong { font-size: 26px; letter-spacing:-.8px; }
+    .footer-brand p { margin: 14px 0 0; color: #9ba7c6; line-height: 1.72; font-weight: 650; }
+    .footer-grid { display:grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 26px 34px; }
+    .footer-grid h4 { margin: 0 0 18px; color: #7f89ac; text-transform: uppercase; letter-spacing: .18em; font-size: 12px; font-weight: 900; }
+    .footer-grid a { display:block; text-decoration:none; color: #b8c1dd; margin: 0 0 14px; font-size: 15.5px; font-weight: 650; line-height: 1.35; transition: color .2s ease, transform .2s ease; }
+    .footer-grid a:hover { color: #fff; transform: translateX(2px); }
+    .footer-bottom { display:flex; justify-content:space-between; gap: 18px; flex-wrap:wrap; padding-top: 26px; border-top:1px solid rgba(180,196,255,.12); color:#7781a2; font-weight: 700; }
+    .socials { display:flex; gap: 18px; flex-wrap:wrap; }
+    .socials a { color:#9ca8c9; text-decoration:none; }
     .floaty { animation: floaty 5.4s ease-in-out infinite; } .floaty2 { animation: floaty 6.2s ease-in-out infinite reverse; }
     @keyframes floaty { 0%,100%{ translate:0 0; } 50%{ translate:0 -14px; } }
     section { padding: 82px 0; position: relative; }
@@ -207,7 +225,9 @@
       .topbar { width: min(100% - 20px, 1160px); top: 8px; }
       .nav { height: 58px; }
       .brand span { display:none; }
-      .nav .btn { min-height: 40px; padding: 0 13px; font-size: 13px; }
+      .brand strong { font-size: 24px; letter-spacing: -.8px; }
+      .brand img { width: 48px; height:48px; border-radius: 17px; }
+      .nav .btn { min-height: 48px; padding: 0 20px; font-size: 15px; background:#fff; color:#0a0d1b; box-shadow: 0 14px 36px rgba(255,255,255,.18); }
       .hero { padding: 44px 0 54px; }
       h1 { letter-spacing: -3px; }
       .lead { font-size: 16.5px; }
@@ -228,6 +248,12 @@
       .float-cta small { display:none; }
       .float-cta { width: calc(100% - 26px); justify-content:center; }
       .float-cta .btn { flex:1; }
+      .footer-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 30px 28px; }
+      .footer-logo strong { font-size: 30px; }
+      .site-footer { padding: 64px 0 28px; }
+      .footer-grid a { font-size: 17px; margin-bottom: 16px; }
+      .footer-bottom { display:block; }
+      .socials { margin-top: 20px; }
     }
     @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior:auto !important; } }
   </style>
@@ -349,6 +375,30 @@
     </section>
 
     <section class="quote"><div class="wrap reveal"><h2><span class="grad">DucDrop không bán sự phức tạp.</span><br />Nó bán cảm giác: “dán link là xong”.</h2></div></section>
+
+    <footer class="site-footer" aria-label="DucDrop footer">
+      <div class="wrap footer-wrap">
+        <div class="footer-brand">
+          <a class="footer-logo" href="#top" aria-label="DucDrop home">
+            <img src="static/ducdrop-logo.png" alt="" />
+            <strong>DucDrop</strong>
+          </a>
+          <p>Drop link. Lấy video ngay. App tải video local-first cho Windows, gọn cho người không muốn đụng command line.</p>
+        </div>
+        <nav class="footer-grid" aria-label="Footer navigation">
+          <div><h4>Product</h4><a href="#download">Download</a><a href="#features">Features</a><a href="#workflow">How it works</a><a href="https://github.com/bktimmy247/ducdrop/releases/tag/v1.1.4">Release notes</a></div>
+          <div><h4>Use cases</h4><a href="#features">YouTube playlist</a><a href="#features">Facebook public video</a><a href="#features">Audio extraction</a><a href="#features">Thumbnail grabber</a></div>
+          <div><h4>Setup guides</h4><a href="#download">Windows installer</a><a href="#download">macOS build</a><a href="#download">Linux AppImage</a><a href="#workflow">Smart folders</a></div>
+          <div><h4>Resources</h4><a href="https://github.com/bktimmy247/ducdrop">GitHub</a><a href="https://github.com/bktimmy247/ducdrop/releases">Downloads</a><a href="#proof">Benchmarks</a><a href="https://zalo.me/g/6mkvta67ijedc8abfgsc">Community</a></div>
+          <div><h4>Company</h4><a href="https://zalo.me/g/6mkvta67ijedc8abfgsc">Contact</a><a href="#download">Privacy note</a><a href="#download">Terms note</a><a href="#top">Agentic Vibe Lab VN</a></div>
+          <div><h4>Trust</h4><a href="#download">Runs on your PC</a><a href="#download">Files stay local</a><a href="#download">No account required</a><a href="#download">Open release page</a></div>
+        </nav>
+        <div class="footer-bottom">
+          <span>© 2026 DucDrop. Built by Cường Đức Agentic.</span>
+          <div class="socials" aria-label="Social links"><a href="https://github.com/bktimmy247/ducdrop">GitHub</a><a href="https://zalo.me/g/6mkvta67ijedc8abfgsc">Zalo</a><a href="#top">Tiếng Việt</a></div>
+        </div>
+      </div>
+    </footer>
   </main>
 
   <div class="float-cta"><small>DucDrop v1.1.4</small><a class="btn primary" href="https://github.com/bktimmy247/ducdrop/releases/download/v1.1.4/DucDrop_1.1.4_x64-setup.exe">Tải Windows</a></div>
