@@ -177,15 +177,18 @@
     .b1{ left:9%; top:15%; } .b2{ right:8%; bottom:10%; width:210px; height:210px; background: radial-gradient(circle at 35% 25%, rgba(255,255,255,.55), rgba(255,83,207,.28) 24%, rgba(139,92,246,.18) 55%, transparent 72%); }
     .visual-card { position: relative; z-index:2; width:min(430px, 86%); padding: 22px; border-radius: 28px; background: rgba(7, 13, 29, .82); border:1px solid rgba(255,255,255,.12); box-shadow:0 24px 80px rgba(0,0,0,.42); }
     .visual-card .line { height: 14px; border-radius:999px; margin: 12px 0; background: linear-gradient(90deg, rgba(25,212,255,.8), rgba(55,245,174,.55), transparent); }
-    .download-panel { display:grid; grid-template-columns: minmax(0,1fr) 330px; gap: 24px; align-items:center; padding: 34px; border-radius: 38px; background: linear-gradient(135deg, rgba(25,212,255,.24), rgba(139,92,246,.18)), rgba(255,255,255,.065); border:1px solid var(--line); box-shadow: var(--shadow), inset 0 1px 0 rgba(255,255,255,.08); }
-    .download-panel h2 { margin-bottom: 12px; }
-    .download-panel p { color: var(--muted); line-height:1.7; margin:0 0 18px; }
-    .download-list { display:grid; gap: 10px; }
-    .download-list a { display:flex; justify-content:space-between; gap: 16px; align-items:center; text-decoration:none; padding: 15px 16px; border-radius: 18px; background: rgba(255,255,255,.065); border:1px solid rgba(255,255,255,.10); font-weight: 950; }
-    .download-list span { color: var(--muted); font-size: 12px; font-weight: 850; }
-    .release-card { padding: 22px; border-radius: 28px; background: rgba(3,7,16,.55); border:1px solid rgba(255,255,255,.10); }
-    .release-card b { display:block; font-size: 42px; letter-spacing:-2px; background: linear-gradient(135deg,#fff,#92efff,#fff2ad); -webkit-background-clip:text; background-clip:text; color:transparent; }
-    .release-card span { color: var(--muted); line-height:1.55; display:block; margin-top:8px; }
+    .download-panel { display:grid; grid-template-columns: minmax(0,1fr) 310px; gap: 22px; align-items:stretch; padding: 28px; border-radius: 38px; background: radial-gradient(circle at 18% 0%, rgba(92, 245, 205, .30), transparent 34%), radial-gradient(circle at 92% 20%, rgba(255, 241, 138, .18), transparent 30%), linear-gradient(150deg, rgba(16, 77, 101, .70), rgba(18, 34, 67, .88) 48%, rgba(25, 22, 63, .82)); border:1px solid rgba(136, 255, 229, .24); box-shadow: 0 34px 120px rgba(0,0,0,.55), 0 0 70px rgba(44, 245, 202, .16), inset 0 1px 0 rgba(255,255,255,.13); }
+    .download-panel h2 { margin-bottom: 12px; text-shadow: 0 10px 40px rgba(0,0,0,.28); }
+    .download-panel p { color: #c6d7e8; line-height:1.72; margin:0 0 18px; }
+    .download-actions { display:grid; gap: 12px; margin-top: 20px; }
+    .download-actions .btn { width: 100%; min-height: 62px; font-size: 17px; }
+    .platform-pills { display:grid; gap: 12px; }
+    .platform-pill { display:flex; justify-content:space-between; gap: 16px; align-items:center; text-decoration:none; padding: 18px 20px; border-radius: 23px; font-weight: 950; background: linear-gradient(135deg, rgba(115, 245, 255, .34), rgba(115, 255, 178, .22) 52%, rgba(255, 246, 153, .18)); border:1px solid rgba(179, 255, 234, .26); box-shadow: inset 0 1px 0 rgba(255,255,255,.20), 0 18px 52px rgba(26, 216, 190, .14); }
+    .platform-pill span { color: #eafff8; font-size: 12px; font-weight: 950; opacity: .92; }
+    .release-link { color: #eafff8; background: rgba(255,255,255,.075); border-color: rgba(179, 255, 234, .20); box-shadow: inset 0 1px 0 rgba(255,255,255,.10); }
+    .release-card { display:flex; flex-direction:column; justify-content:center; padding: 26px; border-radius: 30px; background: radial-gradient(circle at 22% 12%, rgba(94, 255, 214, .14), transparent 40%), rgba(3,7,16,.60); border:1px solid rgba(179, 255, 234, .15); box-shadow: inset 0 1px 0 rgba(255,255,255,.08); }
+    .release-card b { display:block; font-size: 54px; letter-spacing:-2.4px; background: linear-gradient(135deg,#fff,#a5fff1,#fff5a9); -webkit-background-clip:text; background-clip:text; color:transparent; }
+    .release-card span { color: #c6d7e8; line-height:1.58; display:block; margin-top:10px; font-size: 16px; }
     .quote { padding: 56px 0 90px; text-align:center; }
     .quote h2 { max-width: 980px; margin:0 auto; }
     .float-cta { position: fixed; z-index:55; left:50%; bottom: 16px; transform: translateX(-50%); display:flex; gap: 10px; align-items:center; padding: 8px; border-radius:999px; background: rgba(5,9,21,.72); border:1px solid rgba(255,255,255,.13); backdrop-filter: blur(18px); box-shadow: 0 20px 80px rgba(0,0,0,.42); }
@@ -332,8 +335,14 @@
             <div class="kicker">Download</div>
             <h2>Tải DucDrop v1.1.3</h2>
             <p>Bản Windows mới đã có hotfix dừng/xóa lệnh tải thật và layout QR/Zalo nằm cố định trong card thả link, không che các nút tải.</p>
-            <div class="hero-actions"><a class="btn primary" href="https://github.com/bktimmy247/ducdrop/releases/download/v1.1.3/DucDrop_1.1.3_x64-setup.exe">⬇ Tải cho Windows</a><a class="btn" href="https://github.com/bktimmy247/ducdrop/releases/tag/v1.1.3">Xem release</a></div>
-            <div class="download-list"><a href="https://github.com/bktimmy247/ducdrop/releases/download/v1.1.2/DucDrop_1.1.2_aarch64.dmg"><strong>macOS Apple Silicon</strong><span>v1.1.2</span></a><a href="https://github.com/bktimmy247/ducdrop/releases/download/v1.1.2/DucDrop_1.1.2_amd64.AppImage"><strong>Linux AppImage</strong><span>v1.1.2</span></a></div>
+            <div class="download-actions">
+              <a class="btn primary" href="https://github.com/bktimmy247/ducdrop/releases/download/v1.1.3/DucDrop_1.1.3_x64-setup.exe">⬇ Tải cho Windows</a>
+              <div class="platform-pills">
+                <a class="platform-pill" href="https://github.com/bktimmy247/ducdrop/releases/download/v1.1.2/DucDrop_1.1.2_aarch64.dmg"><strong>macOS Apple Silicon</strong><span>v1.1.2</span></a>
+                <a class="platform-pill" href="https://github.com/bktimmy247/ducdrop/releases/download/v1.1.2/DucDrop_1.1.2_amd64.AppImage"><strong>Linux AppImage</strong><span>v1.1.2</span></a>
+              </div>
+              <a class="btn release-link" href="https://github.com/bktimmy247/ducdrop/releases/tag/v1.1.3">Xem release</a>
+            </div>
           </div>
           <div class="release-card"><b>1.1.3</b><span>Hotfix Windows: cancel controls, process kill, QR card fixed inside the drop-card layout.</span></div>
         </div>
