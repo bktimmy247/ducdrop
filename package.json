@@ -1,6 +1,6 @@
 {
   "name": "ducdrop",
-  "version": "1.0.0",
+  "version": "1.1.2",
   "description": "DucDrop - Tha link. Bam tai. Xong.",
   "type": "module",
   "scripts": {
@@ -8,6 +8,8 @@
     "build": "vite build",
     "preview": "vite preview",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+    "prepare:sidecars": "node scripts/prepare-sidecars.mjs",
+    "build:desktop": "pnpm prepare:sidecars && pnpm tauri build",
     "tauri": "tauri"
   },
   "devDependencies": {
@@ -16,6 +18,7 @@
     "@sveltejs/vite-plugin-svelte": "^4.0.0",
     "@tauri-apps/cli": "^2.1.0",
     "@types/node": "^22.9.0",
+    "qrcode": "^1.5.4",
     "svelte": "^5.1.0",
     "svelte-check": "^4.0.0",
     "typescript": "^5.6.0",

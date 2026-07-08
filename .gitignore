@@ -12,3 +12,13 @@ Thumbs.db
 
 # Sidecar binaries (added manually / by fetch script)
 /src-tauri/binaries/*.exe
+/src-tauri/binaries/yt-dlp-*
+/src-tauri/binaries/ffmpeg-*
+!/src-tauri/binaries/README.md
+
+# Local generated evidence / screenshots / logs
+/tmp/
+/ops/
+*.log
+/build-log.txt
+/ducdrop-*.png

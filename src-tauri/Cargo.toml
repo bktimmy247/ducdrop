@@ -1,6 +1,6 @@
 [package]
 name = "ducdrop"
-version = "1.0.0"
+version = "1.1.2"
 description = "DucDrop - Tha link. Bam tai. Xong."
 authors = ["Cuong Duc"]
 edition = "2021"
@@ -27,3 +27,4 @@ codegen-units = 1
 lto = true
 opt-level = "s"
 strip = true
+

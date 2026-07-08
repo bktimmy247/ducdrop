@@ -1,20 +1,34 @@
 :root {
-  --bg: #0b0f17;
-  --bg-soft: #121826;
-  --card: #161d2b;
-  --card-hi: #1d2637;
-  --border: #253044;
-  --text: #eef2f9;
-  --muted: #8b97ad;
-  --accent: #2f81f7;
-  --accent-hi: #4b93ff;
-  --accent-press: #2670e0;
-  --green: #2ec46b;
-  --red: #f2564d;
-  --amber: #f4a72b;
-  --radius: 16px;
-  --radius-sm: 11px;
-  --shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  /* DucDrop brand soul: docs/soul.md */
+  --ink: #07111f;
+  --slate: #0f172a;
+  --surface: #141d2c;
+  --card: #182236;
+  --card-hi: #1f2c42;
+  --border: #27354d;
+  --border-hi: #344866;
+  --text: #f0f5ff;
+  --muted: #93a3bf;
+  --accent: #18c7ff;       /* electric cyan */
+  --accent-hi: #5ce1ff;
+  --accent-press: #0fa3d8;
+  --violet: #7c3aed;       /* deep violet */
+  --violet-hi: #9d6af7;
+  --mint: #2ee59d;
+  --amber: #f59e0b;
+  --rose: #f43f5e;
+
+  /* legacy aliases kept for safety */
+  --bg: var(--ink);
+  --bg-soft: var(--surface);
+  --green: var(--mint);
+  --red: var(--rose);
+
+  --radius: 18px;
+  --radius-sm: 12px;
+  --radius-xs: 8px;
+  --shadow: 0 14px 40px rgba(0, 0, 0, 0.45);
+  --shadow-glow: 0 0 28px rgba(24, 199, 255, 0.18);
   font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
 }
 
@@ -27,13 +41,16 @@ body {
   margin: 0;
   padding: 0;
   height: 100%;
-  background: var(--bg);
+  background: var(--ink);
   color: var(--text);
   -webkit-font-smoothing: antialiased;
 }
 
 body {
-  background: radial-gradient(1200px 600px at 50% -10%, #16202f 0%, var(--bg) 60%);
+  background:
+    radial-gradient(1200px 700px at 50% -10%, rgba(24, 199, 255, 0.1) 0%, transparent 60%),
+    radial-gradient(900px 500px at 90% 10%, rgba(124, 58, 237, 0.08) 0%, transparent 55%),
+    var(--ink);
   user-select: none;
 }
 
@@ -52,6 +69,31 @@ input {
   width: 10px;
 }
 ::-webkit-scrollbar-thumb {
-  background: #263248;
+  background: var(--border);
   border-radius: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 999px;
+}
+.badge--ok {
+  background: rgba(46, 229, 157, 0.14);
+  color: var(--mint);
+}
+.badge--warn {
+  background: rgba(245, 158, 11, 0.14);
+  color: var(--amber);
+}
+.badge--err {
+  background: rgba(244, 63, 94, 0.14);
+  color: var(--rose);
 }
