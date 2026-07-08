@@ -213,14 +213,13 @@
       .lead { font-size: 16.5px; }
       .hero-actions .btn { width: 100%; }
       .stage { min-height: 555px; }
-      .laptop { left: 0; right: 0; top: 18px; min-height: 356px; padding: 12px; border-radius: 28px; transform: rotateY(-4deg) rotateX(2deg); }
+      .laptop { left: 0; right: 0; top: 18px; min-height: 356px; padding: 12px; border-radius: 28px; transform: rotateY(-4deg) rotateX(2deg); z-index: 2; }
       .screen { padding: 15px; }
       .dropbox { padding: 16px; }
       .drop-head { grid-template-columns: 1fr; }
       .qrbox { grid-template-columns: minmax(0,1fr) 70px; }
       .modes { grid-template-columns: repeat(2,1fr); }
-      .phone { width: 142px; min-height: 286px; right: -2px; bottom: 4px; border-radius: 32px; }
-      .mini-card { width: 196px; left: -4px; bottom: 34px; padding: 15px; }
+      .phone, .mini-card { display: none; }
       .metrics, .cards { grid-template-columns: 1fr; }
       section { padding: 58px 0; }
       .workflow, .download-panel { padding: 20px; border-radius: 28px; }
