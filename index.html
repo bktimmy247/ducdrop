@@ -3,472 +3,244 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>DucDrop v1.1.6 — Thả link, lấy video ngay</title>
-  <meta name="description" content="DucDrop là app Windows tải video/audio/thumbnail/subtitle từ YouTube, Facebook public và playlist. Có dừng lệnh tải thật, không cần dùng command line." />
-  <meta name="theme-color" content="#070b18" />
-  <meta property="og:title" content="DucDrop v1.1.6 — Drop link. Lấy video ngay." />
-  <meta property="og:description" content="Một app Windows gọn, đẹp, có yt-dlp + ffmpeg sẵn. Dán link, chọn mode, file về Downloads/DucDrop." />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800;900&display=swap" rel="stylesheet" />
+  <title>VibeLab — Phần mềm nhỏ, giải quyết việc thật</title>
+  <meta name="description" content="VibeLab là nơi anh Cường Đức giới thiệu các phần mềm tiện ích: tải video, chuyển PDF scan sang Word, và các công cụ mới sẽ ra mắt." />
+  <meta property="og:title" content="VibeLab — Phần mềm nhỏ, giải quyết việc thật" />
+  <meta property="og:description" content="Một bộ sưu tập phần mềm gọn, dễ dùng, làm ra để xử lý những việc thật mỗi ngày." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://vibelab.vn/" />
+  <link rel="canonical" href="https://vibelab.vn/" />
   <style>
     :root {
-      --bg: #060814;
-      --bg2: #0b1024;
-      --panel: rgba(13, 20, 43, .72);
-      --panel2: rgba(255, 255, 255, .065);
-      --line: rgba(156, 210, 255, .18);
-      --line2: rgba(255, 255, 255, .14);
-      --text: #f7fbff;
-      --muted: #a9bad4;
-      --dim: #71819a;
-      --cyan: #19d4ff;
-      --mint: #37f5ae;
-      --violet: #8b5cf6;
-      --pink: #ff53cf;
-      --amber: #ffd166;
-      --danger: #ff5572;
-      --shadow: 0 32px 120px rgba(0,0,0,.52);
-      --radius: 30px;
-      font-family: Manrope, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color-scheme: dark;
+      --bg: #070912;
+      --panel: rgba(255,255,255,.075);
+      --panel-strong: rgba(255,255,255,.12);
+      --line: rgba(255,255,255,.14);
+      --text: #f8fbff;
+      --muted: #aeb8ca;
+      --soft: #dbe7ff;
+      --blue: #62b7ff;
+      --cyan: #5df0d2;
+      --violet: #a77bff;
+      --orange: #ffb86b;
+      --green: #83f5a2;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
     * { box-sizing: border-box; }
-    html { scroll-behavior: smooth; background: var(--bg); }
+    html { scroll-behavior: smooth; }
     body {
       margin: 0;
-      color: var(--text);
       min-height: 100vh;
-      overflow-x: hidden;
+      color: var(--text);
       background:
-        radial-gradient(circle at 50% -10%, rgba(25,212,255,.24), transparent 28%),
-        radial-gradient(circle at 88% 14%, rgba(255,83,207,.20), transparent 31%),
-        radial-gradient(circle at 12% 30%, rgba(139,92,246,.26), transparent 34%),
-        linear-gradient(180deg, #080b19 0%, #050711 52%, #03050b 100%);
+        radial-gradient(circle at 18% 8%, rgba(98,183,255,.28), transparent 34rem),
+        radial-gradient(circle at 88% 18%, rgba(167,123,255,.25), transparent 34rem),
+        radial-gradient(circle at 50% 88%, rgba(93,240,210,.14), transparent 38rem),
+        linear-gradient(180deg, #070912 0%, #0d1222 45%, #080a12 100%);
+      overflow-x: hidden;
     }
     body::before {
       content: "";
       position: fixed;
       inset: 0;
-      z-index: -3;
       pointer-events: none;
-      background-image:
-        radial-gradient(circle, rgba(255,255,255,.42) 0 1px, transparent 1.5px),
-        linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px);
-      background-size: 140px 140px, 64px 64px, 64px 64px;
-      mask-image: linear-gradient(#000, rgba(0,0,0,.72) 48%, transparent 92%);
-      opacity: .5;
+      background-image: linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px);
+      background-size: 58px 58px;
+      mask-image: radial-gradient(circle at center, black, transparent 78%);
     }
-    a { color: inherit; }
-    .aurora {
-      position: fixed;
-      inset: -20vh -18vw auto -18vw;
-      height: 80vh;
-      z-index: -2;
-      pointer-events: none;
-      filter: blur(36px) saturate(1.18);
-      opacity: .62;
-      background:
-        radial-gradient(circle at 25% 22%, rgba(25,212,255,.46), transparent 26%),
-        radial-gradient(circle at 58% 16%, rgba(139,92,246,.42), transparent 29%),
-        radial-gradient(circle at 77% 30%, rgba(255,83,207,.30), transparent 25%),
-        radial-gradient(circle at 47% 58%, rgba(55,245,174,.18), transparent 30%);
-      animation: breathe 9s ease-in-out infinite alternate;
+    a { color: inherit; text-decoration: none; }
+    .shell { width: min(1160px, calc(100% - 36px)); margin: 0 auto; }
+    .nav {
+      position: sticky; top: 14px; z-index: 20;
+      margin: 14px auto 0; padding: 10px;
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+      border: 1px solid var(--line); border-radius: 999px;
+      background: rgba(7,9,18,.72); backdrop-filter: blur(18px);
+      box-shadow: 0 18px 50px rgba(0,0,0,.28);
     }
-    @keyframes breathe { from { transform: translate3d(-1.5%, -1%, 0) scale(1); } to { transform: translate3d(1.5%, 1%, 0) scale(1.05); } }
-    .wrap { width: min(1160px, calc(100% - 34px)); margin: 0 auto; position: relative; }
-    .progress { position: fixed; inset: 0 0 auto; height: 3px; z-index: 60; background: rgba(255,255,255,.08); }
-    .progress span { display: block; height: 100%; width: 0%; background: linear-gradient(90deg, var(--cyan), var(--mint), var(--pink)); box-shadow: 0 0 24px rgba(25,212,255,.7); }
-    .topbar {
-      position: sticky; top: 12px; z-index: 50;
-      width: min(1160px, calc(100% - 28px)); margin: 12px auto 0;
-      border: 1px solid rgba(255,255,255,.13);
-      border-radius: 999px;
-      background: rgba(5, 9, 21, .62);
-      backdrop-filter: blur(20px);
-      box-shadow: 0 18px 70px rgba(0,0,0,.34), inset 0 1px 0 rgba(255,255,255,.08);
+    .brand { display: flex; align-items: center; gap: 10px; padding-left: 8px; font-weight: 900; letter-spacing: -.03em; }
+    .logo { width: 38px; height: 38px; display: grid; place-items: center; border-radius: 14px; background: linear-gradient(135deg, var(--blue), var(--violet)); box-shadow: 0 0 28px rgba(98,183,255,.28); }
+    .nav-links { display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: 14px; }
+    .nav-links a { padding: 10px 12px; border-radius: 999px; }
+    .nav-links a:hover { background: rgba(255,255,255,.08); color: var(--text); }
+    .cta { display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: 1px solid rgba(255,255,255,.2); border-radius: 999px; padding: 12px 17px; font-weight: 850; background: linear-gradient(135deg, #f8fbff, #cfe2ff); color: #08111f; box-shadow: 0 16px 38px rgba(98,183,255,.24); }
+    .ghost { display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: 1px solid var(--line); border-radius: 999px; padding: 12px 17px; font-weight: 800; color: var(--soft); background: rgba(255,255,255,.055); }
+    .hero { position: relative; padding: 92px 0 58px; display: grid; grid-template-columns: minmax(0, 1.02fr) minmax(340px, .98fr); gap: 44px; align-items: center; }
+    .kicker { display: inline-flex; width: fit-content; align-items: center; gap: 8px; padding: 9px 12px; border: 1px solid var(--line); border-radius: 999px; color: var(--soft); background: rgba(255,255,255,.06); font-size: 13px; font-weight: 780; }
+    h1 { margin: 18px 0 16px; font-size: clamp(44px, 7.5vw, 92px); line-height: .92; letter-spacing: -.075em; }
+    .gradient { background: linear-gradient(100deg, #fff 0%, #8ed8ff 45%, #d9c7ff 70%, #fff 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .lead { margin: 0; color: var(--muted); font-size: clamp(17px, 2vw, 21px); line-height: 1.65; max-width: 650px; }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
+    .metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 34px; max-width: 640px; }
+    .metric { padding: 15px; border: 1px solid var(--line); border-radius: 22px; background: rgba(255,255,255,.055); }
+    .metric b { display: block; font-size: 22px; letter-spacing: -.04em; }
+    .metric span { color: var(--muted); font-size: 13px; }
+    .stage { position: relative; min-height: 520px; }
+    .orb { position: absolute; border-radius: 999px; filter: blur(.2px); opacity: .88; animation: float 7s ease-in-out infinite; }
+    .orb.a { width: 150px; height: 150px; top: 18px; right: 48px; background: radial-gradient(circle, rgba(98,183,255,.75), rgba(98,183,255,.08)); }
+    .orb.b { width: 95px; height: 95px; left: 18px; bottom: 85px; background: radial-gradient(circle, rgba(93,240,210,.58), rgba(93,240,210,.04)); animation-delay: -2s; }
+    .device-stack { position: absolute; inset: 34px 0 0; display: grid; place-items: center; }
+    .product-card {
+      position: absolute; width: min(410px, 86vw); padding: 18px; border: 1px solid rgba(255,255,255,.16); border-radius: 32px;
+      background: linear-gradient(145deg, rgba(255,255,255,.16), rgba(255,255,255,.065)); backdrop-filter: blur(22px);
+      box-shadow: 0 36px 90px rgba(0,0,0,.36); transform: rotate(var(--r));
     }
-    .nav { height: 62px; display:flex; align-items:center; justify-content:space-between; gap: 14px; padding: 0 9px 0 14px; }
-    .brand { display:flex; align-items:center; gap: 12px; text-decoration:none; min-width: 0; }
-    .brand img { width: 44px; height:44px; border-radius: 15px; padding: 7px; background: rgba(255,255,255,.08); border:1px solid var(--line); box-shadow: 0 10px 34px rgba(25,212,255,.22); }
-    .brand strong { display:block; font-size: 21px; letter-spacing: -.7px; font-weight: 900; }
-    .brand span { display:block; color: var(--muted); font-size: 11px; font-weight: 800; margin-top: 2px; white-space: nowrap; }
-    .navlinks { display:flex; align-items:center; gap: 18px; color: var(--muted); font-size: 13px; font-weight: 900; }
-    .navlinks a { text-decoration:none; transition: color .2s ease; }
-    .navlinks a:hover { color: var(--text); }
-    .btn {
-      display:inline-flex; align-items:center; justify-content:center; gap: 9px;
-      min-height: 45px; padding: 0 18px; border-radius: 999px; text-decoration:none;
-      border: 1px solid rgba(255,255,255,.13); color: var(--text); font-weight: 950;
-      background: rgba(255,255,255,.075);
-      box-shadow: inset 0 1px 0 rgba(255,255,255,.10);
-      transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
-      cursor: pointer;
-      white-space: nowrap;
+    .product-card:nth-child(1) { --r: -5deg; top: 26px; right: 58px; z-index: 3; }
+    .product-card:nth-child(2) { --r: 6deg; top: 178px; left: 24px; z-index: 2; }
+    .product-card:nth-child(3) { --r: -2deg; top: 322px; right: 20px; z-index: 1; opacity: .82; }
+    .card-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 16px; }
+    .pill { padding: 7px 10px; border-radius: 999px; background: rgba(255,255,255,.1); color: var(--soft); font-size: 12px; font-weight: 800; }
+    .app-icon { width: 54px; height: 54px; display: grid; place-items: center; border-radius: 18px; font-size: 22px; background: linear-gradient(135deg, var(--blue), var(--violet)); }
+    .product-card h3 { margin: 0 0 7px; font-size: 25px; letter-spacing: -.045em; }
+    .product-card p { margin: 0; color: var(--muted); line-height: 1.55; }
+    .bar { height: 10px; border-radius: 999px; margin-top: 16px; background: rgba(255,255,255,.09); overflow: hidden; }
+    .bar i { display: block; height: 100%; width: var(--w); border-radius: inherit; background: linear-gradient(90deg, var(--cyan), var(--blue)); }
+    .section { padding: 66px 0; }
+    .section-head { display: flex; justify-content: space-between; align-items: end; gap: 18px; margin-bottom: 22px; }
+    .section h2 { margin: 0; font-size: clamp(32px, 5vw, 58px); line-height: 1; letter-spacing: -.06em; }
+    .section-head p { margin: 0; color: var(--muted); max-width: 520px; line-height: 1.65; }
+    .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+    .software {
+      position: relative; min-height: 330px; padding: 26px; border: 1px solid var(--line); border-radius: 34px;
+      background: linear-gradient(150deg, rgba(255,255,255,.12), rgba(255,255,255,.055)); overflow: hidden;
+      box-shadow: 0 24px 70px rgba(0,0,0,.22);
     }
-    .btn.primary { color:#03111f; border:0; background: linear-gradient(135deg, #8cf0ff 0%, var(--mint) 48%, #fff1a8 100%); box-shadow: 0 20px 70px rgba(25,212,255,.36), 0 0 0 8px rgba(55,245,174,.07); }
-    .btn:hover { transform: translateY(-2px); border-color: rgba(25,212,255,.34); box-shadow: 0 18px 55px rgba(25,212,255,.18), inset 0 1px 0 rgba(255,255,255,.10); }
-    .hero { min-height: calc(100vh - 74px); display:grid; align-items:center; padding: 66px 0 76px; position: relative; }
-    .hero-grid { display:grid; grid-template-columns: minmax(0, .94fr) minmax(360px, 1.06fr); gap: 42px; align-items:center; }
-    .eyebrow { display:inline-flex; align-items:center; gap: 9px; padding: 8px 12px; border-radius:999px; border:1px solid rgba(25,212,255,.24); background: rgba(25,212,255,.10); color:#d8faff; font-size: 13px; font-weight: 950; box-shadow: inset 0 1px 0 rgba(255,255,255,.08); }
-    h1 { margin: 22px 0 18px; font-size: clamp(56px, 8vw, 108px); line-height: .88; letter-spacing: -4.8px; max-width: 760px; font-weight: 900; }
-    .grad { background: linear-gradient(135deg, #fff 0%, #a5efff 34%, #d1bdff 66%, #fff3bf 100%); -webkit-background-clip:text; background-clip:text; color:transparent; }
-    .lead { margin: 0 0 28px; color: var(--muted); font-size: clamp(17px, 2vw, 21px); line-height: 1.72; max-width: 640px; }
-    .hero-actions { display:flex; gap: 12px; flex-wrap: wrap; margin-bottom: 18px; }
-    .mini-proof { display:flex; gap: 9px; flex-wrap:wrap; }
-    .pill { padding: 9px 12px; border-radius: 999px; background: linear-gradient(135deg, rgba(25,212,255,.13), rgba(255,83,207,.09)); border: 1px solid rgba(255,255,255,.14); color:#e5f8ff; font-weight: 950; font-size: 12.5px; box-shadow: inset 0 1px 0 rgba(255,255,255,.08); }
-    .stage { position: relative; min-height: 620px; perspective: 1200px; transform-style: preserve-3d; }
-    .orbit { position:absolute; inset: 8% -4% auto 5%; height: 78%; border: 1px solid rgba(25,212,255,.18); border-radius: 50%; transform: rotate(-16deg) translateZ(-80px); opacity:.72; }
-    .orbit::before, .orbit::after { content:""; position:absolute; width:12px; height:12px; border-radius:50%; background: var(--mint); box-shadow: 0 0 28px var(--mint); }
-    .orbit::before { left: 12%; top: 28%; } .orbit::after { right: 16%; bottom: 22%; background: var(--pink); box-shadow: 0 0 28px var(--pink); }
-    .device { position:absolute; border:1px solid rgba(255,255,255,.14); background: linear-gradient(160deg, rgba(255,255,255,.12), rgba(255,255,255,.04)); box-shadow: var(--shadow), inset 0 1px 0 rgba(255,255,255,.12); backdrop-filter: blur(18px); transform-style: preserve-3d; will-change: transform; }
-    .laptop { left: 3%; right: 1%; top: 15%; min-height: 374px; border-radius: 34px; padding: 18px; transform: rotateY(-8deg) rotateX(3deg) translateZ(20px); }
-    .phone { width: 176px; min-height: 356px; right: 3%; bottom: 2%; border-radius: 38px; padding: 11px; transform: rotateZ(7deg) translateZ(90px); }
-    .mini-card { width: 238px; left: -2%; bottom: 9%; border-radius: 28px; padding: 18px; transform: rotateZ(-7deg) translateZ(80px); }
-    .window { height: 100%; border-radius: 24px; overflow:hidden; border:1px solid rgba(255,255,255,.10); background: rgba(4,9,20,.80); }
-    .winbar { height: 42px; display:flex; align-items:center; gap: 8px; padding: 0 14px; border-bottom:1px solid rgba(255,255,255,.08); }
-    .dot { width:10px; height:10px; border-radius:50%; background:#ff5f57; } .dot:nth-child(2){ background:#ffbd2e; } .dot:nth-child(3){ background:#28c840; }
-    .screen { padding: 22px; }
-    .dropbox { border-radius: 26px; padding: 22px; background: linear-gradient(155deg, rgba(25,212,255,.17), rgba(139,92,246,.12)), rgba(255,255,255,.045); border:1px solid rgba(156,210,255,.18); }
-    .drop-head { display:grid; grid-template-columns: minmax(0, 1fr) 128px; gap: 14px; align-items:center; }
-    .dropbox h3 { margin:0; font-size: 28px; letter-spacing:-1px; }
-    .dropbox p { margin: 7px 0 0; color: var(--muted); line-height:1.48; }
-    .qrbox { display:grid; grid-template-columns: minmax(0,1fr) 72px; gap: 9px; align-items:center; padding: 10px; border-radius: 18px; background: rgba(4,9,20,.72); border:1px solid rgba(25,212,255,.18); }
-    .qrbox strong { display:block; font-size: 11px; } .qrbox span { display:block; margin-top:3px; color: var(--muted); font-size: 9.5px; font-weight: 800; }
-    .qrbox img { width: 72px; height:72px; border-radius: 11px; padding:4px; background:#fff; object-fit: contain; }
-    .input { height: 68px; margin-top: 18px; border-radius: 18px; display:flex; align-items:center; padding:0 16px; color:#86a0c0; font-weight: 900; background: rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.09); overflow:hidden; }
-    .modes { margin-top: 14px; display:grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
-    .mode { min-height: 78px; display:grid; place-items:center; text-align:center; border-radius: 17px; background: rgba(255,255,255,.055); border:1px solid rgba(255,255,255,.09); font-size: 20px; }
-    .mode b { display:block; margin-top: 5px; font-size: 11.5px; }
-    .engine { margin-top: 14px; display:flex; gap: 8px; flex-wrap:wrap; }
-    .engine span { padding:8px 10px; border-radius:999px; color:#b8ffdf; background: rgba(55,245,174,.10); border:1px solid rgba(55,245,174,.20); font-size: 12px; font-weight: 950; }
-    .phone .window { border-radius: 29px; }
-    .phone .screen { padding: 17px 13px; }
-    .phone-top { height: 20px; width: 72px; border-radius:999px; background: rgba(0,0,0,.46); margin: 0 auto 14px; }
-    .phone h4 { margin:0 0 12px; font-size: 18px; letter-spacing:-.5px; }
-    .phone-row { display:flex; justify-content:space-between; align-items:center; padding: 11px; margin: 8px 0; border-radius: 15px; background: rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.08); color:#ddecff; font-weight: 900; font-size: 12px; }
-    .phone-row i { width:9px; height:9px; border-radius:50%; background: var(--mint); box-shadow:0 0 16px var(--mint); }
-    .mini-card strong { display:block; font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing:.8px; }
-    .mini-card b { display:block; margin-top: 5px; font-size: 30px; letter-spacing:-1px; background: linear-gradient(135deg, #fff, #9cf1ff, #fff1a8); -webkit-background-clip:text; background-clip:text; color: transparent; }
-    .mini-card span { display:block; margin-top: 7px; color: var(--muted); line-height:1.45; font-weight: 800; }
-
-
-    .real-ui { padding-top: 36px; }
-    .real-ui-panel { display:grid; grid-template-columns: .72fr 1.28fr; gap: 26px; align-items:center; padding: 24px; border-radius: 36px; background: radial-gradient(circle at 20% 0%, rgba(55,245,174,.16), transparent 34%), rgba(255,255,255,.045); border:1px solid rgba(180,196,255,.14); box-shadow: var(--shadow), inset 0 1px 0 rgba(255,255,255,.08); }
-    .real-ui-copy h2 { margin: 10px 0 12px; font-size: clamp(34px, 5vw, 60px); line-height: .96; letter-spacing: -2.2px; }
-    .real-ui-copy p { color: var(--muted); line-height: 1.72; font-size: 17px; margin: 0 0 16px; }
-    .real-ui-list { display:grid; gap: 10px; margin-top: 18px; }
-    .real-ui-list span { display:flex; align-items:center; gap: 9px; color:#ddecff; font-weight: 850; }
-    .real-ui-shot { position:relative; border-radius: 28px; padding: 10px; background: linear-gradient(135deg, rgba(255,255,255,.13), rgba(255,255,255,.035)); border:1px solid rgba(255,255,255,.14); box-shadow: 0 30px 90px rgba(0,0,0,.45); overflow:hidden; }
-    .real-ui-shot::before { content:"DucDrop app preview"; position:absolute; left: 24px; top: 22px; z-index:2; padding: 7px 10px; border-radius:999px; background: rgba(3,7,18,.72); border:1px solid rgba(255,255,255,.16); color:#d8faff; font-size: 12px; font-weight: 900; backdrop-filter: blur(14px); }
-    .real-ui-shot img { display:block; width:100%; border-radius: 22px; }
-    .site-footer { padding: 72px 0 32px; border-top: 1px solid rgba(180,196,255,.12); background: linear-gradient(180deg, rgba(7,10,30,.18), rgba(4,5,18,.88)); }
-    .footer-wrap { display:grid; gap: 38px; }
-    .footer-brand { max-width: 520px; }
-    .footer-logo { display:inline-flex; align-items:center; gap: 13px; text-decoration:none; }
-    .footer-logo img { width: 46px; height:46px; border-radius: 15px; padding: 7px; background: rgba(255,255,255,.07); border:1px solid rgba(180,196,255,.16); box-shadow: 0 0 34px rgba(116,143,255,.20); }
-    .footer-logo strong { font-size: 26px; letter-spacing:-.8px; }
-    .footer-brand p { margin: 14px 0 0; color: #9ba7c6; line-height: 1.72; font-weight: 650; }
-    .footer-grid { display:grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 26px 34px; }
-    .footer-grid h4 { margin: 0 0 18px; color: #7f89ac; text-transform: uppercase; letter-spacing: .18em; font-size: 12px; font-weight: 900; }
-    .footer-grid a { display:block; text-decoration:none; color: #b8c1dd; margin: 0 0 14px; font-size: 15.5px; font-weight: 650; line-height: 1.35; transition: color .2s ease, transform .2s ease; }
-    .footer-grid a:hover { color: #fff; transform: translateX(2px); }
-    .footer-bottom { display:flex; justify-content:space-between; gap: 18px; flex-wrap:wrap; padding-top: 26px; border-top:1px solid rgba(180,196,255,.12); color:#7781a2; font-weight: 700; }
-    .socials { display:flex; gap: 18px; flex-wrap:wrap; }
-    .socials a { color:#9ca8c9; text-decoration:none; }
-    .floaty { animation: floaty 5.4s ease-in-out infinite; } .floaty2 { animation: floaty 6.2s ease-in-out infinite reverse; }
-    @keyframes floaty { 0%,100%{ translate:0 0; } 50%{ translate:0 -14px; } }
-    section { padding: 82px 0; position: relative; }
-    .section-head { margin-bottom: 28px; }
-    .kicker { color: var(--cyan); font-size: 13px; font-weight: 950; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
-    h2 { margin:0; font-size: clamp(34px, 5vw, 64px); line-height:.94; letter-spacing:-2.4px; }
-    .section-head p { margin: 14px 0 0; color: var(--muted); max-width: 720px; line-height: 1.68; font-size: 17px; }
-    .metrics { display:grid; grid-template-columns: repeat(4,1fr); gap: 14px; }
-    .metric, .card, .workflow, .download-panel { opacity: 0; transform: translateY(28px) scale(.98); transition: opacity .7s ease, transform .7s cubic-bezier(.2,.8,.2,1), border-color .2s ease; }
-    .visible { opacity: 1; transform: translateY(0) scale(1); }
-    .metric { padding: 24px; border-radius: 28px; background: var(--panel); border:1px solid rgba(255,255,255,.10); box-shadow: inset 0 1px 0 rgba(255,255,255,.08); }
-    .metric b { display:block; font-size: 38px; letter-spacing:-1.5px; background: linear-gradient(135deg, #fff, #94efff, #fff1a8); -webkit-background-clip:text; background-clip:text; color:transparent; }
-    .metric span { display:block; margin-top: 6px; color: var(--muted); font-weight: 900; }
-    .cards { display:grid; grid-template-columns: repeat(4,1fr); gap: 16px; }
-    .card { min-height: 236px; padding: 24px; border-radius: 28px; background: linear-gradient(160deg, rgba(255,255,255,.09), rgba(255,255,255,.035)); border:1px solid rgba(255,255,255,.11); box-shadow: inset 0 1px 0 rgba(255,255,255,.08); }
-    .card:hover { border-color: rgba(25,212,255,.35); transform: translateY(-4px) scale(1); }
-    .card .icon { font-size: 34px; margin-bottom: 18px; }
-    .card h3 { margin:0 0 10px; font-size: 20px; letter-spacing:-.5px; }
-    .card p { margin:0; color: var(--muted); line-height:1.65; font-size: 14.5px; }
-    .scenes { display:grid; gap: 22px; }
-    .workflow { position: sticky; top: 96px; display:grid; grid-template-columns: .82fr 1.18fr; gap: 24px; align-items:center; min-height: 70vh; padding: 28px; border-radius: 38px; background: linear-gradient(135deg, rgba(25,212,255,.13), rgba(139,92,246,.10)), rgba(255,255,255,.045); border:1px solid rgba(255,255,255,.11); box-shadow: var(--shadow); backdrop-filter: blur(18px); }
-    .step-no { width: 54px; height:54px; display:grid; place-items:center; border-radius:18px; color:#06101d; font-weight: 950; background: linear-gradient(135deg, var(--cyan), var(--mint)); box-shadow:0 16px 50px rgba(25,212,255,.26); }
-    .workflow h3 { margin: 20px 0 12px; font-size: clamp(32px, 4vw, 56px); line-height:.95; letter-spacing:-2px; }
-    .workflow p { margin:0; color: var(--muted); line-height:1.72; font-size: 17px; }
-    .workflow-visual { min-height: 360px; position: relative; display:grid; place-items:center; overflow:hidden; border-radius: 28px; background: radial-gradient(circle at 50% 38%, rgba(25,212,255,.20), transparent 42%), rgba(3,7,16,.62); border:1px solid rgba(255,255,255,.08); }
-    .bubble { position:absolute; width: 160px; height:160px; border-radius:50%; background: radial-gradient(circle at 35% 25%, rgba(255,255,255,.82), rgba(25,212,255,.38) 20%, rgba(139,92,246,.16) 56%, transparent 70%); filter: blur(.2px); opacity:.8; }
-    .b1{ left:9%; top:15%; } .b2{ right:8%; bottom:10%; width:210px; height:210px; background: radial-gradient(circle at 35% 25%, rgba(255,255,255,.55), rgba(255,83,207,.28) 24%, rgba(139,92,246,.18) 55%, transparent 72%); }
-    .visual-card { position: relative; z-index:2; width:min(430px, 86%); padding: 22px; border-radius: 28px; background: rgba(7, 13, 29, .82); border:1px solid rgba(255,255,255,.12); box-shadow:0 24px 80px rgba(0,0,0,.42); }
-    .visual-card .line { height: 14px; border-radius:999px; margin: 12px 0; background: linear-gradient(90deg, rgba(25,212,255,.8), rgba(55,245,174,.55), transparent); }
-    .download-panel { display:grid; grid-template-columns: minmax(0,1fr) 310px; gap: 22px; align-items:stretch; padding: 28px; border-radius: 38px; background: radial-gradient(circle at 18% 0%, rgba(92, 245, 205, .30), transparent 34%), radial-gradient(circle at 92% 20%, rgba(255, 241, 138, .18), transparent 30%), linear-gradient(150deg, rgba(16, 77, 101, .70), rgba(18, 34, 67, .88) 48%, rgba(25, 22, 63, .82)); border:1px solid rgba(136, 255, 229, .24); box-shadow: 0 34px 120px rgba(0,0,0,.55), 0 0 70px rgba(44, 245, 202, .16), inset 0 1px 0 rgba(255,255,255,.13); }
-    .download-panel h2 { margin-bottom: 12px; text-shadow: 0 10px 40px rgba(0,0,0,.28); }
-    .download-panel p { color: #c6d7e8; line-height:1.72; margin:0 0 18px; }
-    .download-actions { display:grid; gap: 12px; margin-top: 20px; }
-    .download-actions .btn { width: 100%; min-height: 62px; font-size: 17px; }
-    .platform-pills { display:grid; gap: 12px; }
-    .platform-pill { display:flex; justify-content:space-between; gap: 16px; align-items:center; text-decoration:none; padding: 18px 20px; border-radius: 23px; font-weight: 950; background: linear-gradient(135deg, rgba(115, 245, 255, .34), rgba(115, 255, 178, .22) 52%, rgba(255, 246, 153, .18)); border:1px solid rgba(179, 255, 234, .26); box-shadow: inset 0 1px 0 rgba(255,255,255,.20), 0 18px 52px rgba(26, 216, 190, .14); }
-    .platform-pill span { color: #eafff8; font-size: 12px; font-weight: 950; opacity: .92; }
-    .release-link { color: #eafff8; background: rgba(255,255,255,.075); border-color: rgba(179, 255, 234, .20); box-shadow: inset 0 1px 0 rgba(255,255,255,.10); }
-    .release-card { display:flex; flex-direction:column; justify-content:center; padding: 26px; border-radius: 30px; background: radial-gradient(circle at 22% 12%, rgba(94, 255, 214, .14), transparent 40%), rgba(3,7,16,.60); border:1px solid rgba(179, 255, 234, .15); box-shadow: inset 0 1px 0 rgba(255,255,255,.08); }
-    .release-card b { display:block; font-size: 54px; letter-spacing:-2.4px; background: linear-gradient(135deg,#fff,#a5fff1,#fff5a9); -webkit-background-clip:text; background-clip:text; color:transparent; }
-    .release-card span { color: #c6d7e8; line-height:1.58; display:block; margin-top:10px; font-size: 16px; }
-    .quote { padding: 56px 0 90px; text-align:center; }
-    .quote h2 { max-width: 980px; margin:0 auto; }
-    .float-cta { position: fixed; z-index:55; left:50%; bottom: 16px; transform: translateX(-50%); display:flex; gap: 10px; align-items:center; padding: 8px; border-radius:999px; background: rgba(5,9,21,.72); border:1px solid rgba(255,255,255,.13); backdrop-filter: blur(18px); box-shadow: 0 20px 80px rgba(0,0,0,.42); }
-    .float-cta small { color: var(--muted); font-weight: 950; padding-left: 10px; white-space: nowrap; }
-    @media (max-width: 980px) {
-      .hero { min-height: auto; padding-top: 54px; }
-      .hero-grid, .workflow, .download-panel { grid-template-columns: 1fr; }
-      .stage { min-height: 640px; margin-top: 18px; }
-      .workflow { position: relative; top: auto; min-height: auto; }
-      .metrics, .cards { grid-template-columns: repeat(2,1fr); }
-      h1 { font-size: clamp(54px, 13vw, 92px); }
-      .navlinks { display:none; }
+    .software::after { content: ""; position: absolute; width: 260px; height: 260px; right: -90px; bottom: -90px; border-radius: 999px; background: radial-gradient(circle, var(--accent), transparent 68%); opacity: .25; }
+    .software h3 { margin: 18px 0 8px; font-size: 34px; letter-spacing: -.055em; }
+    .software p { margin: 0 0 20px; color: var(--muted); line-height: 1.65; max-width: 560px; }
+    .tags { display: flex; flex-wrap: wrap; gap: 8px; margin: 18px 0 24px; }
+    .tags span { padding: 8px 10px; border: 1px solid var(--line); border-radius: 999px; color: var(--soft); background: rgba(255,255,255,.045); font-size: 13px; }
+    .software .actions { display: flex; flex-wrap: wrap; gap: 10px; position: relative; z-index: 2; }
+    .status { display: inline-flex; align-items: center; gap: 7px; padding: 8px 11px; border-radius: 999px; background: rgba(131,245,162,.12); color: #c9ffd4; font-size: 13px; font-weight: 850; }
+    .status::before { content: ""; width: 8px; height: 8px; border-radius: 999px; background: var(--green); box-shadow: 0 0 18px var(--green); }
+    .soon { background: rgba(255,184,107,.13); color: #ffe0bd; }
+    .soon::before { background: var(--orange); box-shadow: 0 0 18px var(--orange); }
+    .roadmap { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+    .roadmap article { padding: 20px; border: 1px solid var(--line); border-radius: 26px; background: rgba(255,255,255,.055); }
+    .roadmap b { display: block; margin: 12px 0 7px; font-size: 18px; }
+    .roadmap p { margin: 0; color: var(--muted); line-height: 1.55; }
+    .footer { padding: 44px 0 34px; border-top: 1px solid var(--line); color: var(--muted); }
+    .footer-inner { display: flex; justify-content: space-between; gap: 18px; flex-wrap: wrap; }
+    @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-16px); } }
+    @media (max-width: 900px) {
+      .nav-links { display: none; }
+      .hero { grid-template-columns: 1fr; padding-top: 58px; gap: 18px; }
+      .stage { min-height: 430px; }
+      .product-card:nth-child(1) { right: 4px; top: 8px; }
+      .product-card:nth-child(2) { left: 0; top: 150px; }
+      .product-card:nth-child(3) { right: 0; top: 285px; }
+      .grid, .roadmap { grid-template-columns: 1fr; }
+      .section-head { display: grid; }
     }
-    @media (max-width: 640px) {
-      .wrap { width: min(100% - 26px, 1160px); }
-      .topbar { width: min(100% - 20px, 1160px); top: 8px; }
-      .nav { height: 58px; }
-      .brand span { display:none; }
-      .brand strong { font-size: 24px; letter-spacing: -.8px; }
-      .brand img { width: 48px; height:48px; border-radius: 17px; }
-      .nav .btn { min-height: 48px; padding: 0 20px; font-size: 15px; background:#fff; color:#0a0d1b; box-shadow: 0 14px 36px rgba(255,255,255,.18); }
-      body { padding-bottom: 86px; }
+    @media (max-width: 560px) {
+      .shell { width: min(100% - 24px, 1160px); }
+      .nav { top: 8px; border-radius: 24px; }
+      .nav .cta { padding: 10px 12px; font-size: 13px; }
       .hero { padding: 44px 0 34px; }
-      h1 { letter-spacing: -3px; }
-      .lead { font-size: 16.5px; }
-      .hero-actions .btn { width: 100%; }
-      .stage { min-height: auto; margin-top: 26px; perspective: none; transform-style: flat; }
-      .orbit { display: none; }
-      .device { position: relative; transform: none !important; will-change: auto; }
-      .laptop { left: auto; right: auto; top: auto; min-height: auto; padding: 12px; border-radius: 28px; z-index: 2; }
-      .screen { padding: 15px; }
-      .dropbox { padding: 16px; }
-      .drop-head { grid-template-columns: 1fr; }
-      .qrbox { grid-template-columns: minmax(0,1fr) 70px; }
-      .modes { grid-template-columns: repeat(2,1fr); }
-      .phone, .mini-card { display: none; }
-      .real-ui { padding-top: 72px; }
-      .real-ui-panel { grid-template-columns: 1fr; gap: 24px; padding: 18px; border-radius: 28px; }
-      .real-ui-shot { border-radius: 22px; padding: 7px; box-shadow: 0 22px 60px rgba(0,0,0,.36); }
-      .real-ui-shot::before { left: 16px; top: 15px; }
-      .metrics, .cards { grid-template-columns: 1fr; }
-      section { padding: 58px 0; }
-      .workflow, .download-panel { padding: 20px; border-radius: 28px; }
-      .workflow-visual { min-height: 290px; }
-      .download-panel { gap: 16px; }
-      .float-cta small { display:none; }
-      .float-cta { width: calc(100% - 26px); justify-content:center; bottom: 10px; }
-      .float-cta .btn { flex:1; }
-      .footer-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 30px 28px; }
-      .footer-logo strong { font-size: 30px; }
-      .site-footer { padding: 64px 0 28px; }
-      .footer-grid a { font-size: 17px; margin-bottom: 16px; }
-      .footer-bottom { display:block; }
-      .socials { margin-top: 20px; }
+      .metrics { grid-template-columns: 1fr; }
+      .stage { min-height: 390px; }
+      .product-card { width: 92vw; padding: 15px; border-radius: 26px; }
+      .product-card:nth-child(1) { top: 0; }
+      .product-card:nth-child(2) { top: 134px; }
+      .product-card:nth-child(3) { top: 265px; }
+      .product-card h3 { font-size: 21px; }
+      .software { padding: 20px; border-radius: 28px; min-height: auto; }
+      .software h3 { font-size: 29px; }
+      .hero-actions, .software .actions { display: grid; }
+      .cta, .ghost { width: 100%; }
     }
-    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior:auto !important; } }
   </style>
 </head>
 <body>
-  <div class="progress" aria-hidden="true"><span id="progressBar"></span></div>
-  <div class="aurora" aria-hidden="true"></div>
+  <nav class="shell nav" aria-label="VibeLab navigation">
+    <a class="brand" href="/" aria-label="VibeLab"><span class="logo">VL</span><span>VibeLab</span></a>
+    <div class="nav-links">
+      <a href="#software">Phần mềm</a>
+      <a href="#roadmap">Sắp ra mắt</a>
+      <a href="/ducdrop/">DucDrop</a>
+      <a href="/pdf2docx/">PDF2Word</a>
+    </div>
+    <a class="cta" href="#software">Xem công cụ</a>
+  </nav>
 
-  <header class="topbar">
-    <nav class="nav" aria-label="DucDrop navigation">
-      <a class="brand" href="#top">
-        <img src="static/ducdrop-logo.png" alt="DucDrop" />
-        <div><strong>DucDrop</strong><span>v1.1.6 • Windows ready</span></div>
-      </a>
-      <div class="navlinks"><a href="#features">Tính năng</a><a href="#workflow">Workflow</a><a href="#proof">Proof</a></div>
-      <a class="btn primary" href="https://github.com/bktimmy247/ducdrop/releases/download/v1.1.6/DucDrop_1.1.6_x64-setup.exe">Tải Windows</a>
-    </nav>
-  </header>
-
-  <main id="top">
-    <section class="hero">
-      <div class="wrap hero-grid">
-        <div>
-          <div class="eyebrow">⚡ DucDrop v1.1.6 • app tải video đã test thật</div>
-          <h1><span class="grad">Thả link.</span><br />Lấy video ngay.</h1>
-          <p class="lead">Một app Windows gọn mà nhìn là biết dùng: dán link YouTube/Facebook public, chọn Video, Audio, Thumbnail, Subtitle hoặc Tất cả — file tự về <b>Downloads/DucDrop</b>.</p>
-          <div class="hero-actions">
-            <a class="btn primary" href="https://github.com/bktimmy247/ducdrop/releases/download/v1.1.6/DucDrop_1.1.6_x64-setup.exe">⬇ Tải DucDrop 1.1.6</a>
-            <a class="btn" href="#workflow">Xem cách chạy</a>
-          </div>
-          <div class="mini-proof"><span class="pill">YouTube playlist pass</span><span class="pill">Facebook public pass</span><span class="pill">Có nút Dừng thật</span></div>
+  <main>
+    <section class="shell hero">
+      <div>
+        <div class="kicker">⚡ Made by Cường Đức · gọn, dễ dùng, giải quyết việc thật</div>
+        <h1><span class="gradient">Phần mềm nhỏ.</span><br>Hiệu quả rõ.</h1>
+        <p class="lead">VibeLab là nơi tập hợp các công cụ do anh Cường Đức xây dựng: tải video nhanh hơn, chuyển PDF scan sang Word dễ sửa hơn, và nhiều phần mềm thực dụng khác sẽ ra mắt dần.</p>
+        <div class="hero-actions">
+          <a class="cta" href="#software">Khám phá phần mềm</a>
+          <a class="ghost" href="/pdf2docx/">Thử PDF2Word</a>
         </div>
+        <div class="metrics" aria-label="VibeLab facts">
+          <div class="metric"><b>2</b><span>công cụ đang giới thiệu</span></div>
+          <div class="metric"><b>Windows</b><span>ưu tiên dễ cài, dễ gửi</span></div>
+          <div class="metric"><b>Local-first</b><span>nhiều tác vụ xử lý trên máy</span></div>
+        </div>
+      </div>
 
-        <div class="stage" id="stage" aria-label="DucDrop animated product preview">
-          <div class="orbit" aria-hidden="true"></div>
-          <div class="device laptop floaty" data-depth="18">
-            <div class="window">
-              <div class="winbar"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
-              <div class="screen">
-                <div class="dropbox">
-                  <div class="drop-head">
-                    <div><h3>Thả link vào đây</h3><p>Dán một link hoặc nhiều link, mỗi dòng một link.</p></div>
-                    <div class="qrbox"><div><strong>Cường Đức Agentic</strong><span>Quét QR vào nhóm Zalo</span></div><img src="static/cuong-duc-zalo-qr.png" alt="QR Zalo" /></div>
-                  </div>
-                  <div class="input">https://youtube.com/playlist?list=...</div>
-                  <div class="modes"><div class="mode">🎬<b>Video</b></div><div class="mode">🎧<b>Audio</b></div><div class="mode">🖼<b>Thumb</b></div><div class="mode">📝<b>Sub</b></div><div class="mode">📚<b>Tất cả</b></div></div>
-                  <div class="engine"><span>yt-dlp ready</span><span>ffmpeg ready</span><span>smart folders</span></div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="device phone floaty2" data-depth="34">
-            <div class="window"><div class="screen"><div class="phone-top"></div><h4>Queue sống</h4><div class="phone-row"><span>Video 74%</span><i></i></div><div class="phone-row"><span>Dừng lệnh</span><i></i></div><div class="phone-row"><span>Xóa queue</span><i></i></div><div class="phone-row"><span>MP4 ready</span><i></i></div></div></div>
-          </div>
-          <div class="device mini-card floaty" data-depth="26"><strong>Windows installer</strong><b>46MB</b><span>Gọn, có engine đi kèm. Không bắt người dùng cài command line.</span></div>
+      <div class="stage" aria-hidden="true">
+        <div class="orb a"></div><div class="orb b"></div>
+        <div class="device-stack">
+          <article class="product-card">
+            <div class="card-top"><span class="app-icon">⬇️</span><span class="pill">DucDrop</span></div>
+            <h3>Thả link, lấy video</h3><p>Tải video, MP3, ảnh bìa và phụ đề bằng giao diện đơn giản.</p><div class="bar"><i style="--w:82%"></i></div>
+          </article>
+          <article class="product-card">
+            <div class="card-top"><span class="app-icon">📄</span><span class="pill">PDF2Word</span></div>
+            <h3>PDF scan → Word</h3><p>Đọc tài liệu scan tiếng Việt và tạo file Word dễ chỉnh sửa.</p><div class="bar"><i style="--w:67%"></i></div>
+          </article>
+          <article class="product-card">
+            <div class="card-top"><span class="app-icon">🧪</span><span class="pill">Next tools</span></div>
+            <h3>Đang mở rộng</h3><p>Mỗi công cụ mới sẽ có trang riêng dưới VibeLab.</p><div class="bar"><i style="--w:46%"></i></div>
+          </article>
         </div>
       </div>
     </section>
 
-    <section id="interface" class="real-ui">
-      <div class="wrap real-ui-panel reveal">
-        <div class="real-ui-copy">
-          <div class="kicker">Giao diện thực tế</div>
-          <h2>Giao diện rõ, dùng là hiểu.</h2>
-          <p>DucDrop gom mọi thao tác vào một màn hình: dán link, chọn thứ cần tải, theo dõi hàng chờ và mở thư mục lưu file. Không cần nhớ lệnh, không cần cài thêm công cụ dòng lệnh.</p>
-          <div class="real-ui-list"><span>✓ Dán một link hoặc nhiều link cùng lúc</span><span>✓ Chọn Video / Audio / Thumbnail / Subtitle / Tất cả</span><span>✓ Theo dõi hàng chờ, trạng thái engine và thư mục tải</span></div>
-        </div>
-        <figure class="real-ui-shot"><img src="static/ducdrop-real-interface.png" alt="Giao diện thực tế của DucDrop v1.1.6" /></figure>
+    <section id="software" class="shell section">
+      <div class="section-head">
+        <h2>Bộ công cụ VibeLab</h2>
+        <p>Mỗi phần mềm tập trung vào một việc cụ thể, nói rõ dùng để làm gì, và dẫn về trang riêng để tải hoặc thử.</p>
       </div>
-    </section>
-
-    <section id="proof">
-      <div class="wrap">
-        <div class="metrics">
-          <div class="metric reveal"><b>5</b><span>chế độ tải</span></div>
-          <div class="metric reveal"><b>0</b><span>lệnh terminal</span></div>
-          <div class="metric reveal"><b>MP4</b><span>H.264/AAC dễ mở</span></div>
-          <div class="metric reveal"><b>Kill</b><span>dừng tiến trình thật</span></div>
-        </div>
-      </div>
-    </section>
-
-    <section id="features">
-      <div class="wrap">
-        <div class="section-head reveal"><div class="kicker">Tính năng</div><h2>Không cần hiểu codec.<br />Không cần mò lệnh.</h2><p>DucDrop giấu phần phức tạp phía sau một giao diện rõ ràng: người dùng chỉ cần biết mình muốn lấy video, audio, thumbnail, subtitle hay toàn bộ playlist.</p></div>
-        <div class="cards">
-          <article class="card reveal"><div class="icon">🎬</div><h3>Tải video</h3><p>Ưu tiên MP4 H.264/AAC để file mở ổn trên trình phát phổ biến.</p></article>
-          <article class="card reveal"><div class="icon">🎧</div><h3>Tách audio</h3><p>Lấy riêng phần nghe thành MP3 cho bài học, podcast, nhạc hoặc review.</p></article>
-          <article class="card reveal"><div class="icon">🖼</div><h3>Lấy thumbnail</h3><p>Tải ảnh thumbnail nhanh, convert sang JPG, tiện cho bài đăng hoặc tư liệu.</p></article>
-          <article class="card reveal"><div class="icon">⏹</div><h3>Dừng & xóa thật</h3><p>Bản 1.1.6 có Dừng tải, Tải lại và nút Cập nhật tự tải bản mới ngay trong app.</p></article>
-        </div>
-      </div>
-    </section>
-
-    <section id="workflow">
-      <div class="wrap scenes">
-        <article class="workflow reveal">
-          <div><div class="step-no">01</div><h3>Dán link vào một khung.</h3><p>YouTube, Facebook public, playlist hoặc nhiều link — mỗi dòng một link. Không phải nhớ tham số, không phải mở terminal.</p></div>
-          <div class="workflow-visual"><span class="bubble b1"></span><span class="bubble b2"></span><div class="visual-card"><b>Paste URL</b><div class="line"></div><div class="line" style="width:72%"></div><div class="line" style="width:44%"></div></div></div>
+      <div class="grid">
+        <article class="software" style="--accent:#62b7ff">
+          <span class="status">Đang có</span>
+          <h3>DucDrop</h3>
+          <p>Ứng dụng Windows giúp thả link và tải nhanh video, MP3, ảnh bìa, phụ đề. Phù hợp cho người làm nội dung cần thao tác gọn.</p>
+          <div class="tags"><span>Tải video</span><span>MP3</span><span>Ảnh bìa</span><span>Phụ đề</span></div>
+          <div class="actions"><a class="cta" href="/ducdrop/">Mở trang DucDrop</a><a class="ghost" href="https://github.com/bktimmy247/ducdrop/releases/tag/v1.1.3">Tải Windows</a></div>
         </article>
-        <article class="workflow reveal">
-          <div><div class="step-no">02</div><h3>Chọn đúng thứ cần lấy.</h3><p>Video, audio, thumbnail, subtitle hoặc Tất cả. Các mode hiện như những nút lớn, dễ bấm trên màn hình nhỏ.</p></div>
-          <div class="workflow-visual"><span class="bubble b1"></span><span class="bubble b2"></span><div class="visual-card"><b>Pick mode</b><div class="modes"><div class="mode">🎬<b>Video</b></div><div class="mode">🎧<b>Audio</b></div><div class="mode">🖼<b>Thumb</b></div><div class="mode">📚<b>All</b></div></div></div></div>
-        </article>
-        <article class="workflow reveal">
-          <div><div class="step-no">03</div><h3>Đang tải thì vẫn kiểm soát được.</h3><p>Nút Dừng, Xóa lệnh và Dừng & xóa danh sách xử lý cả UI lẫn tiến trình thật. Không còn cảnh xóa danh sách mà link cũ vẫn chạy tới 100%.</p></div>
-          <div class="workflow-visual"><span class="bubble b1"></span><span class="bubble b2"></span><div class="visual-card"><b>Queue control</b><div class="phone-row"><span>Downloading 68%</span><i></i></div><div class="phone-row"><span>Stop process</span><i></i></div><div class="phone-row"><span>Clear queue</span><i></i></div></div></div>
+        <article class="software" style="--accent:#5df0d2">
+          <span class="status">Đang có</span>
+          <h3>PDF2Word</h3>
+          <p>Chuyển PDF sang Word. Với tài liệu scan, công cụ đọc lại chữ để tạo bản Word dễ sửa hơn, nhất là tài liệu tiếng Việt.</p>
+          <div class="tags"><span>PDF scan</span><span>OCR tiếng Việt</span><span>Word chỉnh sửa</span><span>Chọn trang</span></div>
+          <div class="actions"><a class="cta" href="/pdf2docx/">Mở trang PDF2Word</a><a class="ghost" href="https://github.com/bktimmy247/pdf2docx">Xem repo</a></div>
         </article>
       </div>
     </section>
 
-    <section id="download">
-      <div class="wrap">
-        <div class="download-panel reveal">
-          <div>
-            <div class="kicker">Download</div>
-            <h2>Tải DucDrop v1.1.6</h2>
-            <p>Bản Windows mới đã có hotfix dừng/xóa lệnh tải thật và layout QR/Zalo nằm cố định trong card thả link, không che các nút tải.</p>
-            <div class="download-actions">
-              <a class="btn primary" href="https://github.com/bktimmy247/ducdrop/releases/download/v1.1.6/DucDrop_1.1.6_x64-setup.exe">⬇ Tải cho Windows</a>
-              <div class="platform-pills">
-                <a class="platform-pill" href="https://github.com/bktimmy247/ducdrop/releases/download/v1.1.2/DucDrop_1.1.2_aarch64.dmg"><strong>macOS Apple Silicon</strong><span>v1.1.2</span></a>
-                <a class="platform-pill" href="https://github.com/bktimmy247/ducdrop/releases/download/v1.1.2/DucDrop_1.1.2_amd64.AppImage"><strong>Linux AppImage</strong><span>v1.1.2</span></a>
-              </div>
-              <a class="btn release-link" href="https://github.com/bktimmy247/ducdrop/releases/tag/v1.1.6">Xem release</a>
-            </div>
-          </div>
-          <div class="release-card"><b>1.1.6</b><span>Bản Windows gọn, có sẵn engine tải video, Mở file tải đúng vị trí, Tải lại sau khi dừng/lỗi và Cập nhật tự tải bản mới.</span></div>
-        </div>
+    <section id="roadmap" class="shell section">
+      <div class="section-head">
+        <h2>Sau này thêm rất dễ</h2>
+        <p>Trang chủ này được thiết kế như kệ sản phẩm. Mỗi tool mới chỉ cần thêm một card và một đường dẫn riêng.</p>
+      </div>
+      <div class="roadmap">
+        <article><span class="status soon">Sắp có</span><b>Công cụ xử lý file</b><p>Nén, đổi định dạng, trích nội dung, gom nhiều tác vụ nhỏ vào một chỗ.</p></article>
+        <article><span class="status soon">Sắp có</span><b>Tool cho creator</b><p>Công cụ tải, cắt, chuyển đổi, chuẩn bị tài nguyên cho video và bài đăng.</p></article>
+        <article><span class="status soon">Sắp có</span><b>Phần mềm nội bộ</b><p>Các tiện ích làm ra từ nhu cầu thật, đóng gói lại để người khác dùng dễ hơn.</p></article>
       </div>
     </section>
-
-
-    <footer class="site-footer" aria-label="DucDrop footer">
-      <div class="wrap footer-wrap">
-        <div class="footer-brand">
-          <a class="footer-logo" href="#top" aria-label="DucDrop home">
-            <img src="static/ducdrop-logo.png" alt="" />
-            <strong>DucDrop</strong>
-          </a>
-          <p>Drop link. Lấy video ngay. App tải video local-first cho Windows, gọn cho người không muốn đụng command line.</p>
-        </div>
-        <nav class="footer-grid" aria-label="Footer navigation">
-          <div><h4>Product</h4><a href="#download">Download</a><a href="#features">Features</a><a href="#workflow">How it works</a><a href="https://github.com/bktimmy247/ducdrop/releases/tag/v1.1.6">Release notes</a></div>
-          <div><h4>Use cases</h4><a href="#features">YouTube playlist</a><a href="#features">Facebook public video</a><a href="#features">Audio extraction</a><a href="#features">Thumbnail grabber</a></div>
-          <div><h4>Setup guides</h4><a href="#download">Windows installer</a><a href="#download">macOS build</a><a href="#download">Linux AppImage</a><a href="#workflow">Smart folders</a></div>
-          <div><h4>Resources</h4><a href="https://github.com/bktimmy247/ducdrop">GitHub</a><a href="https://github.com/bktimmy247/ducdrop/releases">Downloads</a><a href="#proof">Benchmarks</a><a href="https://zalo.me/g/6mkvta67ijedc8abfgsc">Community</a></div>
-          <div><h4>Company</h4><a href="https://zalo.me/g/6mkvta67ijedc8abfgsc">Contact</a><a href="#download">Privacy note</a><a href="#download">Terms note</a><a href="#top">Agentic Vibe Lab VN</a></div>
-          <div><h4>Trust</h4><a href="#download">Runs on your PC</a><a href="#download">Files stay local</a><a href="#download">No account required</a><a href="#download">Open release page</a></div>
-        </nav>
-        <div class="footer-bottom">
-          <span>© 2026 DucDrop. Built by Cường Đức Agentic.</span>
-          <div class="socials" aria-label="Social links"><a href="https://github.com/bktimmy247/ducdrop">GitHub</a><a href="https://zalo.me/g/6mkvta67ijedc8abfgsc">Zalo</a><a href="#top">Tiếng Việt</a></div>
-        </div>
-      </div>
-    </footer>
   </main>
 
-  <div class="float-cta"><small>DucDrop v1.1.6</small><a class="btn primary" href="https://github.com/bktimmy247/ducdrop/releases/download/v1.1.6/DucDrop_1.1.6_x64-setup.exe">Tải Windows</a></div>
-
-  <script>
-    const progress = document.getElementById('progressBar');
-    const stage = document.getElementById('stage');
-    const movers = [...document.querySelectorAll('[data-depth]')];
-    const reveals = [...document.querySelectorAll('.reveal')];
-    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-    function onScroll() {
-      const max = document.documentElement.scrollHeight - innerHeight;
-      const pct = max > 0 ? (scrollY / max) * 100 : 0;
-      progress.style.width = pct + '%';
-      if (!reduce && stage) {
-        const r = stage.getBoundingClientRect();
-        const center = (r.top + r.height / 2 - innerHeight / 2) / innerHeight;
-        movers.forEach((el) => {
-          const depth = Number(el.dataset.depth || 10);
-          el.style.setProperty('--scroll-y', `${center * depth}px`);
-          el.style.translate = `0 ${center * depth}px`;
-        });
-      }
-    }
-    addEventListener('scroll', onScroll, { passive: true });
-    onScroll();
-
-    const io = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
-    }, { threshold: .16, rootMargin: '0px 0px -8% 0px' });
-    reveals.forEach((el, i) => { el.style.transitionDelay = Math.min(i % 4 * 80, 240) + 'ms'; io.observe(el); });
-
-    if (!reduce && stage) {
-      stage.addEventListener('pointermove', (e) => {
-        const rect = stage.getBoundingClientRect();
-        const x = (e.clientX - rect.left) / rect.width - .5;
-        const y = (e.clientY - rect.top) / rect.height - .5;
-        stage.style.transform = `rotateY(${x * 4}deg) rotateX(${-y * 3}deg)`;
-      });
-      stage.addEventListener('pointerleave', () => { stage.style.transform = ''; });
-    }
-  </script>
+  <footer class="shell footer">
+    <div class="footer-inner">
+      <div><b style="color:#fff">VibeLab</b><br>Phần mềm nhỏ, giải quyết việc thật.</div>
+      <div>© 2026 Cường Đức · Built with AI-assisted product workflow</div>
+    </div>
+  </footer>
 </body>
 </html>
