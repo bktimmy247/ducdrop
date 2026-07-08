@@ -2,6 +2,8 @@
   import { onMount } from "svelte";
   import {
     startDownload,
+    cancelDownload,
+    cancelAllDownloads,
     catchPreview,
     openFolder,
     getDownloadsDir,
@@ -175,6 +177,43 @@
     }
   }
 
+  function isActive(item: DownloadProgress): boolean {
+    return item.status === "queued" || item.status === "downloading";
+  }
+
+  async function stopItem(item: DownloadProgress) {
+    if (!isActive(item)) return;
+    items = items.map((x) =>
+      x.id === item.id ? { ...x, status: "cancelled", message: "Đã dừng lệnh tải." } : x,
+    );
+    try {
+      await cancelDownload(item.id);
+      showToast("Đã dừng lệnh tải", "info");
+    } catch (e) {
+      showToast(humanError(String(e)), "error");
+      log(`cancel error: ${String(e)}`);
+    }
+  }
+
+  async function removeItem(item: DownloadProgress) {
+    if (isActive(item)) await stopItem(item);
+    items = items.filter((x) => x.id !== item.id);
+  }
+
+  async function clearQueue() {
+    const hasActive = items.some(isActive);
+    if (hasActive) {
+      try {
+        await cancelAllDownloads();
+        showToast("Đã dừng toàn bộ lệnh tải và xóa danh sách", "info");
+      } catch (e) {
+        showToast(humanError(String(e)), "error");
+        log(`cancel all error: ${String(e)}`);
+      }
+    }
+    items = [];
+  }
+
   async function reveal(item: DownloadProgress) {
     if (item.filepath) await openFolder(item.filepath);
   }
@@ -235,6 +274,8 @@
         return states.completed;
       case "error":
         return states.failed;
+      case "cancelled":
+        return "Đã dừng";
       default:
         return s;
     }
@@ -250,6 +291,8 @@
         return "✓";
       case "error":
         return "✕";
+      case "cancelled":
+        return "⏹";
       default:
         return "•";
     }
@@ -293,16 +336,6 @@
         <p class="sub">{hero.dropHint}</p>
       </div>
 
-      <aside class="owner-card" aria-label="Thông tin cộng đồng Cường Đức Agentic">
-        <div class="owner-copy">
-          <div class="owner-kicker">Cộng đồng</div>
-          <div class="owner-name">Cường Đức Agentic</div>
-          <a class="owner-link" href="https://zalo.me/g/6mkvta67ijedc8abfgsc" target="_blank" rel="noreferrer">
-            zalo.me/g/6mkvta67ijedc8abfgsc
-          </a>
-        </div>
-        <img class="owner-qr" src="/cuong-duc-zalo-qr.png" alt="QR nhóm Zalo Cường Đức Agentic" />
-      </aside>
     </div>
 
     <div class="paste-row">
@@ -320,6 +353,17 @@
         {busy ? loading.catch : ctas.catch}
       </button>
     </div>
+
+      <aside class="owner-card" aria-label="Thông tin cộng đồng Cường Đức Agentic">
+        <div class="owner-copy">
+          <div class="owner-kicker">Cộng đồng</div>
+          <div class="owner-name">Cường Đức Agentic</div>
+          <a class="owner-link" href="https://zalo.me/g/6mkvta67ijedc8abfgsc" target="_blank" rel="noreferrer">
+            zalo.me/g/6mkvta67ijedc8abfgsc
+          </a>
+        </div>
+        <img class="owner-qr" src="/cuong-duc-zalo-qr.png" alt="QR nhóm Zalo Cường Đức Agentic" />
+      </aside>
 
     {#if hasManyLinks()}
       <div class="link-count">Đã nhận {linkLines().length} link. Chọn một chế độ bên dưới để tải lần lượt.</div>
@@ -370,7 +414,7 @@
     <div class="section-head">
       <div class="section-title">Hàng chờ &amp; trạng thái</div>
       {#if items.length > 0}
-        <button class="ghost small" onclick={() => (items = [])}>Xóa danh sách</button>
+        <button class="ghost small danger" onclick={clearQueue}>Dừng & xóa danh sách</button>
       {/if}
     </div>
 
@@ -383,7 +427,7 @@
     {:else}
       <div class="items">
         {#each items as item (item.id)}
-          <div class="task" class:task--done={item.status === "completed"} class:task--err={item.status === "error"}>
+          <div class="task" class:task--done={item.status === "completed"} class:task--err={item.status === "error"} class:task--cancelled={item.status === "cancelled"}>
             {#if item.thumbnail}
               <img class="task-thumb" src={item.thumbnail} alt="" />
             {:else}
@@ -392,7 +436,7 @@
             <div class="task-body">
               <div class="task-title">{item.title || item.url}</div>
               <div class="task-meta">
-                <span class="task-status" class:ok={item.status === "completed"} class:bad={item.status === "error"}>
+                <span class="task-status" class:ok={item.status === "completed"} class:bad={item.status === "error"} class:muted={item.status === "cancelled"}>
                   {statusIcon(item.status)} {statusLabel(item.status)}
                 </span>
                 {#if item.status === "downloading" || item.status === "queued"}
@@ -402,8 +446,8 @@
                   {/if}
                 {/if}
               </div>
-              {#if item.message && item.status === "error"}
-                <div class="task-msg">{humanError(item.message)}</div>
+              {#if item.message && (item.status === "error" || item.status === "cancelled")}
+                <div class="task-msg" class:muted={item.status === "cancelled"}>{item.status === "error" ? humanError(item.message) : item.message}</div>
               {/if}
               {#if item.status === "downloading" || item.status === "queued"}
                 <div class="bar">
@@ -411,11 +455,17 @@
                 </div>
               {/if}
             </div>
-            {#if item.status === "completed"}
-              <button class="secondary small" onclick={() => reveal(item)}>
-                {ctas.openFolder}
-              </button>
-            {/if}
+            <div class="task-actions">
+              {#if isActive(item)}
+                <button class="danger small" onclick={() => stopItem(item)}>Dừng</button>
+              {/if}
+              {#if item.status === "completed"}
+                <button class="secondary small" onclick={() => reveal(item)}>
+                  {ctas.openFolder}
+                </button>
+              {/if}
+              <button class="ghost small" onclick={() => removeItem(item)}>Xóa lệnh</button>
+            </div>
           </div>
         {/each}
       </div>
@@ -620,6 +670,10 @@
     padding: 6px 10px;
     font-size: 12px;
   }
+  .ghost.danger {
+    color: var(--rose);
+    border-color: rgba(244, 63, 94, 0.24);
+  }
   .ghost.tiny {
     padding: 4px 8px;
     font-size: 13px;
@@ -670,10 +724,7 @@
     box-shadow: var(--shadow-glow), var(--shadow);
   }
   .hero-head {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) 330px;
-    gap: 24px;
-    align-items: center;
+    display: block;
   }
   .hero-text {
     text-align: left;
@@ -947,6 +998,10 @@
   .task--err {
     border-color: rgba(244, 63, 94, 0.25);
   }
+  .task--cancelled {
+    border-color: rgba(147, 163, 191, 0.24);
+    opacity: 0.78;
+  }
   .task-thumb {
     width: 72px;
     height: 50px;
@@ -991,6 +1046,9 @@
   .task-status.bad {
     color: var(--rose);
   }
+  .task-status.muted {
+    color: var(--muted);
+  }
   .task-pct {
     color: var(--accent-hi);
     font-weight: 700;
@@ -1003,6 +1061,24 @@
     font-size: 12.5px;
     color: var(--rose);
     line-height: 1.4;
+  }
+  .task-msg.muted {
+    color: var(--muted);
+  }
+  .task-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+  .danger.small {
+    padding: 9px 13px;
+    font-size: 13px;
+    border-radius: var(--radius-sm);
+    color: #fff;
+    background: linear-gradient(180deg, rgba(244, 63, 94, 0.92), rgba(190, 18, 60, 0.88));
+    box-shadow: 0 10px 24px rgba(244, 63, 94, 0.18);
   }
   .bar {
     margin-top: 8px;
@@ -1114,16 +1190,17 @@
   .owner-card {
     width: 100%;
     display: grid;
-    grid-template-columns: 1fr 112px;
-    gap: 16px;
+    grid-template-columns: minmax(0, 1fr) 88px;
+    gap: 14px;
     align-items: center;
-    padding: 16px;
-    border-radius: 24px;
-    background: rgba(7, 17, 31, 0.78);
+    padding: 12px 14px;
+    border-radius: 20px;
+    background: rgba(7, 17, 31, 0.66);
     border: 1px solid rgba(24, 199, 255, 0.18);
-    box-shadow: 0 18px 55px rgba(0,0,0,0.42), inset 0 1px 0 rgba(255,255,255,0.08);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
     backdrop-filter: blur(18px);
-    z-index: 20;
+    position: relative;
+    z-index: 1;
   }
   .owner-kicker {
     color: var(--accent-hi);
@@ -1134,7 +1211,7 @@
     margin-bottom: 5px;
   }
   .owner-name {
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 900;
     color: var(--text);
     letter-spacing: -0.3px;
@@ -1159,8 +1236,8 @@
     color: var(--accent-hi);
   }
   .owner-qr {
-    width: 112px;
-    height: 112px;
+    width: 88px;
+    height: 88px;
     border-radius: 14px;
     object-fit: contain;
     padding: 6px;
@@ -1193,7 +1270,7 @@
   /* responsive */
   @media (max-width: 860px) {
     .hero-head {
-      grid-template-columns: 1fr;
+      display: block;
     }
     .hero-text {
       padding-left: 0;
@@ -1223,6 +1300,14 @@
     .preview {
       flex-direction: column;
       align-items: flex-start;
+    }
+    .owner-card {
+      grid-template-columns: minmax(0, 1fr) 76px;
+      padding: 10px 12px;
+    }
+    .owner-qr {
+      width: 76px;
+      height: 76px;
     }
     .preview-thumb {
       width: 100%;

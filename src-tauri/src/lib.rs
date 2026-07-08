@@ -1,6 +1,11 @@
+use std::collections::{HashMap, HashSet};
 use std::path::PathBuf;
 use std::process::Stdio;
+use std::sync::{Mutex, OnceLock};
 use std::time::Duration;
+
+#[cfg(target_os = "windows")]
+use std::os::windows::process::CommandExt;
 
 use serde::Serialize;
 use serde_json::Value;
@@ -19,6 +24,82 @@ fn hide_child_window(cmd: &mut Command) {
 
 #[cfg(not(target_os = "windows"))]
 fn hide_child_window(_cmd: &mut Command) {}
+
+
+static ACTIVE_DOWNLOADS: OnceLock<Mutex<HashMap<String, u32>>> = OnceLock::new();
+static CANCELLED_DOWNLOADS: OnceLock<Mutex<HashSet<String>>> = OnceLock::new();
+
+fn active_downloads() -> &'static Mutex<HashMap<String, u32>> {
+    ACTIVE_DOWNLOADS.get_or_init(|| Mutex::new(HashMap::new()))
+}
+
+fn cancelled_downloads() -> &'static Mutex<HashSet<String>> {
+    CANCELLED_DOWNLOADS.get_or_init(|| Mutex::new(HashSet::new()))
+}
+
+#[cfg(target_os = "windows")]
+fn kill_process_tree(pid: u32) -> Result<(), String> {
+    std::process::Command::new("taskkill")
+        .args(["/PID", &pid.to_string(), "/T", "/F"])
+        .creation_flags(CREATE_NO_WINDOW)
+        .stdout(Stdio::null())
+        .stderr(Stdio::null())
+        .status()
+        .map_err(|e| e.to_string())?;
+    Ok(())
+}
+
+#[cfg(not(target_os = "windows"))]
+fn kill_process_tree(pid: u32) -> Result<(), String> {
+    std::process::Command::new("kill")
+        .args(["-TERM", &pid.to_string()])
+        .stdout(Stdio::null())
+        .stderr(Stdio::null())
+        .status()
+        .map_err(|e| e.to_string())?;
+    Ok(())
+}
+
+#[tauri::command]
+fn cancel_download(id: String) -> Result<(), String> {
+    cancelled_downloads()
+        .lock()
+        .map_err(|e| e.to_string())?
+        .insert(id.clone());
+
+    let pid = active_downloads()
+        .lock()
+        .map_err(|e| e.to_string())?
+        .get(&id)
+        .copied();
+
+    if let Some(pid) = pid {
+        kill_process_tree(pid)?;
+    }
+    Ok(())
+}
+
+#[tauri::command]
+fn cancel_all_downloads() -> Result<(), String> {
+    let ids_and_pids: Vec<(String, u32)> = active_downloads()
+        .lock()
+        .map_err(|e| e.to_string())?
+        .iter()
+        .map(|(id, pid)| (id.clone(), *pid))
+        .collect();
+
+    {
+        let mut cancelled = cancelled_downloads().lock().map_err(|e| e.to_string())?;
+        for (id, _) in &ids_and_pids {
+            cancelled.insert(id.clone());
+        }
+    }
+
+    for (_, pid) in ids_and_pids {
+        let _ = kill_process_tree(pid);
+    }
+    Ok(())
+}
 
 #[derive(Clone, Serialize)]
 struct Progress {
@@ -466,6 +547,12 @@ async fn start_download(app: AppHandle, url: String, mode: String) -> Result<Str
         .spawn()
         .map_err(|e| format!("Không chạy được yt-dlp: {e}"))?;
 
+    if let Some(pid) = child.id() {
+        let _ = active_downloads()
+            .lock()
+            .map(|mut active| active.insert(id.clone(), pid));
+    }
+
     let stdout = child.stdout.take().ok_or("no stdout")?;
     let mut reader = BufReader::new(stdout).lines();
 
@@ -496,8 +583,15 @@ async fn start_download(app: AppHandle, url: String, mode: String) -> Result<Str
     }
 
     let status = child.wait().await.map_err(|e| e.to_string())?;
+    let _ = active_downloads().lock().map(|mut active| active.remove(&id));
+    let was_cancelled = cancelled_downloads()
+        .lock()
+        .map(|mut cancelled| cancelled.remove(&id))
+        .unwrap_or(false);
 
-    if status.success() {
+    if was_cancelled {
+        emit_status("cancelled", 0.0, "", &title, Some("Đã dừng lệnh tải.".into()));
+    } else if status.success() {
         if no_subtitles && mode == "subtitle" && last_file.is_none() {
             emit_status("error", 0.0, "", &title, Some("Nguồn này không có phụ đề để tải.".into()));
             return Ok(id);
@@ -546,6 +640,8 @@ pub fn run() {
             get_downloads_dir,
             get_engine_health,
             catch_preview,
+            cancel_download,
+            cancel_all_downloads,
         ])
         .run(tauri::generate_context!())
         .expect("error while running DucDrop");

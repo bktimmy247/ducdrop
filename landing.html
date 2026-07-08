@@ -182,11 +182,11 @@
     <main class="hero">
       <div class="hero-grid">
         <div>
-          <div class="eyebrow">⚡ DucDrop v1.1.2 • Windows app đã test tải thật</div>
+          <div class="eyebrow">⚡ DucDrop v1.1.3 • Windows app đã test tải thật</div>
           <h1><span class="grad">Drop link.</span><br/>Lấy video ngay.</h1>
           <p class="lead">DucDrop biến việc tải video thành một thao tác gọn như kéo-thả: video, audio, thumbnail, subtitle và playlist/kênh trong một app Windows đẹp, nhẹ, dễ dùng.</p>
           <div class="hero-actions">
-            <a class="btn primary" href="#download">⬇ Tải DucDrop v1.1.2</a>
+            <a class="btn primary" href="#download">⬇ Tải DucDrop v1.1.3</a>
             <a class="btn" href="https://zalo.me/g/6mkvta67ijedc8abfgsc" target="_blank" rel="noreferrer">Tham gia nhóm Zalo</a>
           </div>
           <div class="mini-proof"><span class="pill">YouTube playlist pass</span><span class="pill">Facebook public pass</span><span class="pill">MP4 H.264/AAC</span></div>
@@ -252,17 +252,17 @@
           <div class="check"><b>Facebook public</b><span>PASS • MP4 H.264/AAC</span></div>
           <div class="check warn"><b>TikTok public</b><span>IP/platform dependent</span></div>
         </div>
-        <div class="card"><div class="icon">🧪</div><h3>Fix quan trọng ở v1.1.2</h3><p>yt-dlp giờ nhận đúng ffmpeg sidecar nên video/audio được merge thành MP4 thật, không còn tải rời file hình và file tiếng. Subtitle cũng tránh tải toàn bộ ngôn ngữ để không bị YouTube 429.</p><button class="btn evidence-btn" id="openEvidence">Xem evidence test</button></div>
+        <div class="card"><div class="icon">🧪</div><h3>Fix quan trọng ở v1.1.3</h3><p>yt-dlp giờ nhận đúng ffmpeg sidecar nên video/audio được merge thành MP4 thật, không còn tải rời file hình và file tiếng. Subtitle cũng tránh tải toàn bộ ngôn ngữ để không bị YouTube 429. Dừng/xóa lệnh tải ở bản Windows 1.1.3 sẽ kill tiến trình thật, không còn tải nền sau khi xóa danh sách.</p><button class="btn evidence-btn" id="openEvidence">Xem evidence test</button></div>
       </div>
     </section>
 
     <section id="download">
-      <div class="section-head"><h2>Tải DucDrop v1.1.2</h2><p>Chọn đúng hệ điều hành của anh/chị rồi bấm Tải. Mỗi nền tảng có nút tải riêng.</p></div>
+      <div class="section-head"><h2>Tải DucDrop v1.1.3</h2><p>Chọn đúng hệ điều hành của anh/chị rồi bấm Tải. Mỗi nền tảng có nút tải riêng.</p></div>
       <div class="dl-grid">
         <div class="dl-card">
           <div class="dl-os">🪟 Windows x64</div>
           <div class="dl-meta">EXE installer • 46.5 MB</div>
-          <a class="btn primary" href="https://github.com/bktimmy247/ducdrop/releases/download/v1.1.2/DucDrop_1.1.2_x64-setup.exe" download>⬇ Tải cho Windows</a>
+          <a class="btn primary" href="https://github.com/bktimmy247/ducdrop/releases/download/v1.1.3/DucDrop_1.1.3_x64-setup.exe" download>⬇ Tải cho Windows</a>
         </div>
         <div class="dl-card">
           <div class="dl-os"> macOS Apple Silicon</div>
@@ -294,11 +294,11 @@
     <footer><div class="foot"><span>© Cường Đức Agentic • DucDrop</span><span>Nhẹ, gọn, dành cho người chỉ muốn tải xong việc.</span></div></footer>
   </div>
 
-  <div class="float-cta"><small>DucDrop v1.1.2</small><a class="btn primary" href="#download">Tải ngay</a></div>
+  <div class="float-cta"><small>DucDrop v1.1.3</small><a class="btn primary" href="#download">Tải ngay</a></div>
 
   <div class="modal" id="evidenceModal" aria-hidden="true">
     <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="evidenceTitle">
-      <div class="modal-head"><div><h3 id="evidenceTitle">Evidence test tải thật</h3><p class="lead" style="font-size:16px;margin:8px 0 0">Bản smoke test trước khi build installer v1.1.2.</p></div><button class="close" id="closeEvidence" aria-label="Đóng">×</button></div>
+      <div class="modal-head"><div><h3 id="evidenceTitle">Evidence test tải thật</h3><p class="lead" style="font-size:16px;margin:8px 0 0">Bản smoke test trước khi build installer v1.1.3.</p></div><button class="close" id="closeEvidence" aria-label="Đóng">×</button></div>
       <div class="evidence-grid">
         <div><b>YouTube video</b><span>MP4 merged, H.264 + AAC.</span></div>
         <div><b>YouTube audio</b><span>MP3 output.</span></div>
@@ -314,8 +314,8 @@
     (function(){
       const base = 'https://github.com/bktimmy247/ducdrop/releases/download/';
       const files = {
-        'v1.1.2': {
-          win: 'DucDrop_1.1.2_x64-setup.exe',
+        'v1.1.3': {
+          win: 'DucDrop_1.1.3_x64-setup.exe',
           mac: 'DucDrop_1.1.2_aarch64.dmg',
           'linux-appimage': 'DucDrop_1.1.2_amd64.AppImage',
           'linux-deb': 'DucDrop_1.1.2_amd64.deb'

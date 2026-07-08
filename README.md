@@ -11,6 +11,7 @@ DucDrop is a desktop downloader for normal users: paste a public video link, cho
 - Thumbnail download and JPG conversion.
 - Subtitle download to SRT when available.
 - Playlist/channel mode with organized output folders.
+- Cancel active downloads and clear the queue without leaving yt-dlp/ffmpeg running.
 - Bundled `yt-dlp` + `ffmpeg` sidecars so users do not need CLI setup.
 
 ## Platforms
@@ -74,7 +75,7 @@ macOS/Linux real artifacts are built by GitHub Actions:
 .github/workflows/desktop-release.yml
 ```
 
-Run it manually with **Actions -> DucDrop desktop builds -> Run workflow**, or push a tag like `v1.1.2`.
+Run it manually with **Actions -> DucDrop desktop builds -> Run workflow**, or push a tag like `v1.1.3`.
 
 ## License notes
 

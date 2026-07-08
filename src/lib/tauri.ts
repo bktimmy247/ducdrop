@@ -21,6 +21,22 @@ export async function startDownload(
   return invoke<string>("start_download", { url, mode });
 }
 
+export async function cancelDownload(id: string): Promise<void> {
+  if (!hasTauri()) {
+    console.warn("[dev] cancelDownload noop", id);
+    return;
+  }
+  await invoke("cancel_download", { id });
+}
+
+export async function cancelAllDownloads(): Promise<void> {
+  if (!hasTauri()) {
+    console.warn("[dev] cancelAllDownloads noop");
+    return;
+  }
+  await invoke("cancel_all_downloads");
+}
+
 export async function catchPreview(url: string): Promise<PreviewInfo | null> {
   if (!hasTauri()) {
     console.warn("[dev] catchPreview noop", url);
