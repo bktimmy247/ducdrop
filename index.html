@@ -139,6 +139,11 @@
     .platform-downloads a { text-decoration:none; padding:14px; border-radius:18px; background:rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.10); }
     .platform-downloads a strong { display:block; font-size:14px; margin-bottom:5px; }
     .platform-downloads a span { color:var(--muted); font-size:12px; font-weight:800; }
+    .picker { display:grid; grid-template-columns: 1fr 2fr; gap:12px; margin-top:18px; }
+    .picker label { display:grid; gap:6px; font-size:12px; font-weight:900; color:#c3c7d6; text-transform:uppercase; letter-spacing:.4px; }
+    .picker select { height:48px; padding:0 14px; border-radius:16px; background:rgba(7,17,31,.85); color:#f6fbff; border:1px solid rgba(255,255,255,.14); font-weight:800; font-size:14px; }
+    .picker-note { margin-top:12px !important; color:#9fe9c7 !important; font-weight:800; }
+    @media (max-width:640px){ .picker { grid-template-columns:1fr; } }
     .faq { display:grid; gap:12px; }
     details { border-radius:18px; background:rgba(255,255,255,.055); border:1px solid rgba(255,255,255,.08); padding:16px 18px; }
     summary { cursor:pointer; font-weight:900; } details p { color:var(--muted); line-height:1.6; margin:12px 0 0; }
@@ -253,15 +258,23 @@
       <div class="download">
         <div>
           <h2>Tải DucDrop v1.1.2</h2>
-          <p>Đã có bản Windows, macOS Apple Silicon và Linux x64 trên GitHub Release. macOS Intel đang chờ runner build riêng.</p>
-          <div class="platform-downloads">
-            <a href="https://github.com/bktimmy247/ducdrop/releases/download/v1.1.2/DucDrop_1.1.2_x64-setup.exe"><strong>Windows x64</strong><span>EXE installer • 46.5 MB</span></a>
-            <a href="https://github.com/bktimmy247/ducdrop/releases/download/v1.1.2/DucDrop_1.1.2_aarch64.dmg"><strong>macOS Apple Silicon</strong><span>DMG • 66.9 MB</span></a>
-            <a href="https://github.com/bktimmy247/ducdrop/releases/download/v1.1.2/DucDrop_1.1.2_amd64.AppImage"><strong>Linux x64</strong><span>AppImage • 146.9 MB</span></a>
-            <a href="https://github.com/bktimmy247/ducdrop/releases/download/v1.1.2/DucDrop_1.1.2_amd64.deb"><strong>Linux Debian/Ubuntu</strong><span>DEB • 72.2 MB</span></a>
+          <p>Chọn phiên bản và hệ điều hành, bấm Tải là tải về ngay. Trang tự gợi ý bản phù hợp máy anh/chị.</p>
+          <div class="picker">
+            <label>Phiên bản
+              <select id="verSelect"><option value="v1.1.2">v1.1.2 (mới nhất)</option></select>
+            </label>
+            <label>Nền tảng
+              <select id="osSelect">
+                <option value="win">Windows x64 — EXE • 46.5 MB</option>
+                <option value="mac">macOS Apple Silicon — DMG • 66.9 MB</option>
+                <option value="linux-appimage">Linux x64 — AppImage • 146.9 MB</option>
+                <option value="linux-deb">Linux Debian/Ubuntu — DEB • 72.2 MB</option>
+              </select>
+            </label>
           </div>
+          <p class="picker-note" id="pickerNote">Đã chọn: Windows x64</p>
         </div>
-        <a class="btn primary" href="https://github.com/bktimmy247/ducdrop/releases/tag/v1.1.2" target="_blank" rel="noreferrer">⬇ Mở Release</a>
+        <a class="btn primary" id="downloadBtn" href="https://github.com/bktimmy247/ducdrop/releases/download/v1.1.2/DucDrop_1.1.2_x64-setup.exe" download>⬇ Tải ngay</a>
       </div>
     </section>
 
@@ -294,6 +307,41 @@
   </div>
 
   <script>
+    (function(){
+      const base = 'https://github.com/bktimmy247/ducdrop/releases/download/';
+      const files = {
+        'v1.1.2': {
+          win: 'DucDrop_1.1.2_x64-setup.exe',
+          mac: 'DucDrop_1.1.2_aarch64.dmg',
+          'linux-appimage': 'DucDrop_1.1.2_amd64.AppImage',
+          'linux-deb': 'DucDrop_1.1.2_amd64.deb'
+        }
+      };
+      const labels = { win:'Windows x64', mac:'macOS Apple Silicon', 'linux-appimage':'Linux x64 AppImage', 'linux-deb':'Linux DEB' };
+      const verSel = document.getElementById('verSelect');
+      const osSel = document.getElementById('osSelect');
+      const btn = document.getElementById('downloadBtn');
+      const note = document.getElementById('pickerNote');
+      function detectOS(){
+        const p = (navigator.userAgentData && navigator.userAgentData.platform || navigator.platform || navigator.userAgent).toLowerCase();
+        if (p.includes('mac')) return 'mac';
+        if (p.includes('linux') || p.includes('x11')) return 'linux-appimage';
+        return 'win';
+      }
+      function update(){
+        const ver = verSel.value, os = osSel.value;
+        const file = files[ver] && files[ver][os];
+        if (!file) return;
+        btn.href = base + ver + '/' + file;
+        note.textContent = 'Đã chọn: ' + labels[os] + ' • ' + ver;
+      }
+      if (verSel && osSel && btn){
+        osSel.value = detectOS();
+        verSel.addEventListener('change', update);
+        osSel.addEventListener('change', update);
+        update();
+      }
+    })();
     const revealTargets = document.querySelectorAll('.metric, .card, .workflow, .download');
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
