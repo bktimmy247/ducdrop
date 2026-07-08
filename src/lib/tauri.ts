@@ -4,6 +4,13 @@
 import { invoke } from "@tauri-apps/api/core";
 import type { DownloadMode, DownloadProgress, DownloadStatus, EngineHealth, PreviewInfo } from "./types";
 
+export interface UpdateResult {
+  current_version: string;
+  latest_version: string;
+  update_available: boolean;
+  message: string;
+}
+
 export type { DownloadMode, DownloadProgress, DownloadStatus, EngineHealth, PreviewInfo };
 
 function hasTauri(): boolean {
@@ -53,6 +60,27 @@ export async function catchPreview(url: string): Promise<PreviewInfo | null> {
 export async function openFolder(path: string): Promise<void> {
   if (!hasTauri()) return;
   await invoke("open_folder", { path });
+}
+
+export async function openExternalUrl(url: string): Promise<void> {
+  if (!hasTauri()) {
+    window.open(url, "_blank", "noopener,noreferrer");
+    return;
+  }
+  const { open } = await import("@tauri-apps/plugin-shell");
+  await open(url);
+}
+
+export async function updateToLatest(): Promise<UpdateResult> {
+  if (!hasTauri()) {
+    return {
+      current_version: "dev",
+      latest_version: "dev",
+      update_available: false,
+      message: "Tính năng cập nhật chỉ chạy trong app Windows.",
+    };
+  }
+  return invoke<UpdateResult>("update_to_latest");
 }
 
 export async function getDownloadsDir(): Promise<string> {

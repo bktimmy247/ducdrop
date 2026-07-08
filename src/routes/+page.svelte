@@ -6,6 +6,7 @@
     cancelAllDownloads,
     catchPreview,
     openFolder,
+    updateToLatest,
     getDownloadsDir,
     readClipboard,
     onProgress,
@@ -37,6 +38,8 @@
   let advancedOpen = $state(false);
   let logs = $state<string[]>([]);
   let dropHover = $state(false);
+  let retryMeta = $state<Record<string, { url: string; mode: DownloadMode }>>({});
+  let updating = $state(false);
 
   let toastTimer: ReturnType<typeof setTimeout> | null = null;
   function showToast(text: string, kind: "error" | "info" = "info") {
@@ -164,7 +167,8 @@
     busy = true;
     try {
       for (const link of selected) {
-        await startDownload(link, runMode);
+        const id = await startDownload(link, runMode);
+        retryMeta = { ...retryMeta, [id]: { url: link, mode: runMode } };
       }
       showToast(selected.length > 1 ? `Đã thêm ${selected.length} link vào hàng chờ` : hints.added);
       preview = null;
@@ -192,6 +196,40 @@
     } catch (e) {
       showToast(humanError(String(e)), "error");
       log(`cancel error: ${String(e)}`);
+    }
+  }
+
+  async function retryItem(item: DownloadProgress) {
+    const meta = retryMeta[item.id];
+    const retryUrl = meta?.url || item.url;
+    const retryMode = meta?.mode || "video";
+    if (!retryUrl || !looksLikeUrl(retryUrl)) {
+      showToast("Không tìm thấy link để tải lại", "error");
+      return;
+    }
+    try {
+      const id = await startDownload(retryUrl, retryMode);
+      retryMeta = { ...retryMeta, [id]: { url: retryUrl, mode: retryMode } };
+      showToast("Đã thêm lại lệnh tải", "info");
+    } catch (e) {
+      showToast(humanError(String(e)), "error");
+      log(`retry error: ${String(e)}`);
+    }
+  }
+
+  async function runUpdate() {
+    if (updating) return;
+    updating = true;
+    showToast("Đang kiểm tra bản cập nhật...", "info");
+    try {
+      const result = await updateToLatest();
+      showToast(result.message, result.update_available ? "info" : "info");
+      log(`update: ${result.message}`);
+    } catch (e) {
+      showToast(humanError(String(e)), "error");
+      log(`update error: ${String(e)}`);
+    } finally {
+      updating = false;
     }
   }
 
@@ -316,6 +354,9 @@
     </div>
 
     <div class="top-actions">
+      <button class="ghost" disabled={updating} onclick={runUpdate} title="Tải và cài bản DucDrop mới nhất">
+        ⬆️ {updating ? "Đang cập nhật..." : "Cập nhật"}
+      </button>
       <button class="ghost" onclick={openDownloadsDir} title={ctas.openFolder}>
         📂 {ctas.openFolder}
       </button>
@@ -457,7 +498,10 @@
             </div>
             <div class="task-actions">
               {#if isActive(item)}
-                <button class="danger small" onclick={() => stopItem(item)}>Dừng</button>
+                <button class="danger small" onclick={() => stopItem(item)}>Dừng tải</button>
+              {/if}
+              {#if item.status === "cancelled" || item.status === "error"}
+                <button class="primary small" onclick={() => retryItem(item)}>Tải lại</button>
               {/if}
               {#if item.status === "completed"}
                 <button class="secondary small" onclick={() => reveal(item)}>

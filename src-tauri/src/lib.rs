@@ -7,7 +7,7 @@ use std::time::Duration;
 #[cfg(target_os = "windows")]
 use std::os::windows::process::CommandExt;
 
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use tauri::{AppHandle, Emitter, Manager};
 use tokio::io::{AsyncBufReadExt, BufReader};
@@ -99,6 +99,124 @@ fn cancel_all_downloads() -> Result<(), String> {
         let _ = kill_process_tree(pid);
     }
     Ok(())
+}
+
+
+#[derive(Deserialize)]
+struct GitHubRelease {
+    tag_name: String,
+    html_url: String,
+    assets: Vec<GitHubAsset>,
+}
+
+#[derive(Deserialize)]
+struct GitHubAsset {
+    name: String,
+    browser_download_url: String,
+}
+
+#[derive(Serialize)]
+struct UpdateResult {
+    current_version: String,
+    latest_version: String,
+    update_available: bool,
+    message: String,
+}
+
+fn normalize_version(v: &str) -> String {
+    v.trim().trim_start_matches('v').to_string()
+}
+
+fn is_newer_version(latest: &str, current: &str) -> bool {
+    let parse = |v: &str| -> Vec<u32> {
+        normalize_version(v)
+            .split('.')
+            .map(|x| x.parse::<u32>().unwrap_or(0))
+            .collect()
+    };
+    let a = parse(latest);
+    let b = parse(current);
+    for i in 0..a.len().max(b.len()) {
+        let av = *a.get(i).unwrap_or(&0);
+        let bv = *b.get(i).unwrap_or(&0);
+        if av > bv { return true; }
+        if av < bv { return false; }
+    }
+    false
+}
+
+#[tauri::command]
+async fn update_to_latest() -> Result<UpdateResult, String> {
+    let current = env!("CARGO_PKG_VERSION").to_string();
+    let client = reqwest::Client::builder()
+        .user_agent("DucDrop updater")
+        .build()
+        .map_err(|e| e.to_string())?;
+
+    let release: GitHubRelease = client
+        .get("https://api.github.com/repos/bktimmy247/ducdrop/releases/latest")
+        .send()
+        .await
+        .map_err(|e| format!("Không kiểm tra được bản cập nhật: {e}"))?
+        .error_for_status()
+        .map_err(|e| format!("GitHub trả lỗi khi kiểm tra cập nhật: {e}"))?
+        .json()
+        .await
+        .map_err(|e| format!("Không đọc được thông tin bản cập nhật: {e}"))?;
+
+    let latest = normalize_version(&release.tag_name);
+    if !is_newer_version(&latest, &current) {
+        return Ok(UpdateResult {
+            current_version: current.clone(),
+            latest_version: latest,
+            update_available: false,
+            message: format!("DucDrop đang ở bản mới nhất ({current})."),
+        });
+    }
+
+    let asset = release
+        .assets
+        .iter()
+        .find(|a| a.name.to_lowercase().ends_with(".exe") && a.name.to_lowercase().contains("setup"))
+        .or_else(|| release.assets.iter().find(|a| a.name.to_lowercase().ends_with(".exe")))
+        .ok_or_else(|| format!("Có bản {latest} nhưng chưa thấy file cài Windows. Mở release: {}", release.html_url))?;
+
+    let bytes = client
+        .get(&asset.browser_download_url)
+        .send()
+        .await
+        .map_err(|e| format!("Không tải được bản cập nhật: {e}"))?
+        .error_for_status()
+        .map_err(|e| format!("Link tải cập nhật bị lỗi: {e}"))?
+        .bytes()
+        .await
+        .map_err(|e| format!("Không đọc được file cập nhật: {e}"))?;
+
+    let dir = std::env::temp_dir().join("DucDropUpdates");
+    tokio::fs::create_dir_all(&dir).await.map_err(|e| e.to_string())?;
+    let installer_path = dir.join(&asset.name);
+    tokio::fs::write(&installer_path, bytes).await.map_err(|e| e.to_string())?;
+
+    #[cfg(target_os = "windows")]
+    {
+        std::process::Command::new(&installer_path)
+            .creation_flags(CREATE_NO_WINDOW)
+            .spawn()
+            .map_err(|e| format!("Đã tải xong nhưng không chạy được installer: {e}"))?;
+    }
+    #[cfg(not(target_os = "windows"))]
+    {
+        std::process::Command::new(&installer_path)
+            .spawn()
+            .map_err(|e| format!("Đã tải xong nhưng không chạy được installer: {e}"))?;
+    }
+
+    Ok(UpdateResult {
+        current_version: current,
+        latest_version: latest.clone(),
+        update_available: true,
+        message: format!("Đã tải DucDrop {latest}. Trình cài đặt đang mở, anh bấm theo hướng dẫn để cập nhật."),
+    })
 }
 
 #[derive(Clone, Serialize)]
@@ -642,6 +760,7 @@ pub fn run() {
             catch_preview,
             cancel_download,
             cancel_all_downloads,
+            update_to_latest,
         ])
         .run(tauri::generate_context!())
         .expect("error while running DucDrop");
