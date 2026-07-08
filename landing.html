@@ -152,6 +152,16 @@
     .mini-card b { display:block; margin-top: 5px; font-size: 30px; letter-spacing:-1px; background: linear-gradient(135deg, #fff, #9cf1ff, #fff1a8); -webkit-background-clip:text; background-clip:text; color: transparent; }
     .mini-card span { display:block; margin-top: 7px; color: var(--muted); line-height:1.45; font-weight: 800; }
 
+
+    .real-ui { padding-top: 36px; }
+    .real-ui-panel { display:grid; grid-template-columns: .72fr 1.28fr; gap: 26px; align-items:center; padding: 24px; border-radius: 36px; background: radial-gradient(circle at 20% 0%, rgba(55,245,174,.16), transparent 34%), rgba(255,255,255,.045); border:1px solid rgba(180,196,255,.14); box-shadow: var(--shadow), inset 0 1px 0 rgba(255,255,255,.08); }
+    .real-ui-copy h2 { margin: 10px 0 12px; font-size: clamp(34px, 5vw, 60px); line-height: .96; letter-spacing: -2.2px; }
+    .real-ui-copy p { color: var(--muted); line-height: 1.72; font-size: 17px; margin: 0 0 16px; }
+    .real-ui-list { display:grid; gap: 10px; margin-top: 18px; }
+    .real-ui-list span { display:flex; align-items:center; gap: 9px; color:#ddecff; font-weight: 850; }
+    .real-ui-shot { position:relative; border-radius: 28px; padding: 10px; background: linear-gradient(135deg, rgba(255,255,255,.13), rgba(255,255,255,.035)); border:1px solid rgba(255,255,255,.14); box-shadow: 0 30px 90px rgba(0,0,0,.45); overflow:hidden; }
+    .real-ui-shot::before { content:"Actual software UI"; position:absolute; left: 24px; top: 22px; z-index:2; padding: 7px 10px; border-radius:999px; background: rgba(3,7,18,.72); border:1px solid rgba(255,255,255,.16); color:#d8faff; font-size: 12px; font-weight: 900; backdrop-filter: blur(14px); }
+    .real-ui-shot img { display:block; width:100%; border-radius: 22px; }
     .site-footer { padding: 72px 0 32px; border-top: 1px solid rgba(180,196,255,.12); background: linear-gradient(180deg, rgba(7,10,30,.18), rgba(4,5,18,.88)); }
     .footer-wrap { display:grid; gap: 38px; }
     .footer-brand { max-width: 520px; }
@@ -248,6 +258,9 @@
       .float-cta small { display:none; }
       .float-cta { width: calc(100% - 26px); justify-content:center; }
       .float-cta .btn { flex:1; }
+      .real-ui-panel { grid-template-columns: 1fr; padding: 18px; border-radius: 28px; }
+      .real-ui-shot { border-radius: 22px; padding: 7px; }
+      .real-ui-shot::before { left: 16px; top: 15px; }
       .footer-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 30px 28px; }
       .footer-logo strong { font-size: 30px; }
       .site-footer { padding: 64px 0 28px; }
@@ -310,6 +323,18 @@
           </div>
           <div class="device mini-card floaty" data-depth="26"><strong>Windows installer</strong><b>46MB</b><span>Gọn, có engine đi kèm. Không bắt người dùng cài command line.</span></div>
         </div>
+      </div>
+    </section>
+
+    <section id="interface" class="real-ui">
+      <div class="wrap real-ui-panel reveal">
+        <div class="real-ui-copy">
+          <div class="kicker">Giao diện thực tế</div>
+          <h2>Đây là phần mềm thật, không phải mockup.</h2>
+          <p>Ảnh chụp trực tiếp từ DucDrop v1.1.4: card QR nằm đúng góc phải trong khung thả link, ô nhập link rõ ràng, các mode tải nằm dưới và không bị che.</p>
+          <div class="real-ui-list"><span>✓ QR/Zalo cố định trong card chính</span><span>✓ Video / Audio / Thumbnail / Subtitle / Tất cả</span><span>✓ Hàng chờ, engine và tùy chọn nằm rõ bên dưới</span></div>
+        </div>
+        <figure class="real-ui-shot"><img src="static/ducdrop-real-interface.png" alt="Giao diện thực tế của DucDrop v1.1.4" /></figure>
       </div>
     </section>
 
