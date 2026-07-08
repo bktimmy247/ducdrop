@@ -238,29 +238,33 @@
       .brand strong { font-size: 24px; letter-spacing: -.8px; }
       .brand img { width: 48px; height:48px; border-radius: 17px; }
       .nav .btn { min-height: 48px; padding: 0 20px; font-size: 15px; background:#fff; color:#0a0d1b; box-shadow: 0 14px 36px rgba(255,255,255,.18); }
-      .hero { padding: 44px 0 54px; }
+      body { padding-bottom: 86px; }
+      .hero { padding: 44px 0 34px; }
       h1 { letter-spacing: -3px; }
       .lead { font-size: 16.5px; }
       .hero-actions .btn { width: 100%; }
-      .stage { min-height: 555px; }
-      .laptop { left: 0; right: 0; top: 18px; min-height: 356px; padding: 12px; border-radius: 28px; transform: rotateY(-4deg) rotateX(2deg); z-index: 2; }
+      .stage { min-height: auto; margin-top: 26px; perspective: none; transform-style: flat; }
+      .orbit { display: none; }
+      .device { position: relative; transform: none !important; will-change: auto; }
+      .laptop { left: auto; right: auto; top: auto; min-height: auto; padding: 12px; border-radius: 28px; z-index: 2; }
       .screen { padding: 15px; }
       .dropbox { padding: 16px; }
       .drop-head { grid-template-columns: 1fr; }
       .qrbox { grid-template-columns: minmax(0,1fr) 70px; }
       .modes { grid-template-columns: repeat(2,1fr); }
       .phone, .mini-card { display: none; }
+      .real-ui { padding-top: 72px; }
+      .real-ui-panel { grid-template-columns: 1fr; gap: 24px; padding: 18px; border-radius: 28px; }
+      .real-ui-shot { border-radius: 22px; padding: 7px; box-shadow: 0 22px 60px rgba(0,0,0,.36); }
+      .real-ui-shot::before { left: 16px; top: 15px; }
       .metrics, .cards { grid-template-columns: 1fr; }
       section { padding: 58px 0; }
       .workflow, .download-panel { padding: 20px; border-radius: 28px; }
       .workflow-visual { min-height: 290px; }
       .download-panel { gap: 16px; }
       .float-cta small { display:none; }
-      .float-cta { width: calc(100% - 26px); justify-content:center; }
+      .float-cta { width: calc(100% - 26px); justify-content:center; bottom: 10px; }
       .float-cta .btn { flex:1; }
-      .real-ui-panel { grid-template-columns: 1fr; padding: 18px; border-radius: 28px; }
-      .real-ui-shot { border-radius: 22px; padding: 7px; }
-      .real-ui-shot::before { left: 16px; top: 15px; }
       .footer-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 30px 28px; }
       .footer-logo strong { font-size: 30px; }
       .site-footer { padding: 64px 0 28px; }
