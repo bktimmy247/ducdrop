@@ -1,4 +1,4 @@
-﻿<script lang="ts">
+<script lang="ts">
   import { onMount } from "svelte";
   import {
     startDownload,
@@ -336,6 +336,16 @@
         <p class="sub">{hero.dropHint}</p>
       </div>
 
+      <aside class="owner-card" aria-label="Thông tin cộng đồng Cường Đức Agentic">
+        <div class="owner-copy">
+          <div class="owner-kicker">Cộng đồng</div>
+          <div class="owner-name">Cường Đức Agentic</div>
+          <a class="owner-link" href="https://zalo.me/g/6mkvta67ijedc8abfgsc" target="_blank" rel="noreferrer">
+            zalo.me/g/6mkvta67ijedc8abfgsc
+          </a>
+        </div>
+        <img class="owner-qr" src="/cuong-duc-zalo-qr.png" alt="QR nhóm Zalo Cường Đức Agentic" />
+      </aside>
     </div>
 
     <div class="paste-row">
@@ -354,16 +364,6 @@
       </button>
     </div>
 
-      <aside class="owner-card" aria-label="Thông tin cộng đồng Cường Đức Agentic">
-        <div class="owner-copy">
-          <div class="owner-kicker">Cộng đồng</div>
-          <div class="owner-name">Cường Đức Agentic</div>
-          <a class="owner-link" href="https://zalo.me/g/6mkvta67ijedc8abfgsc" target="_blank" rel="noreferrer">
-            zalo.me/g/6mkvta67ijedc8abfgsc
-          </a>
-        </div>
-        <img class="owner-qr" src="/cuong-duc-zalo-qr.png" alt="QR nhóm Zalo Cường Đức Agentic" />
-      </aside>
 
     {#if hasManyLinks()}
       <div class="link-count">Đã nhận {linkLines().length} link. Chọn một chế độ bên dưới để tải lần lượt.</div>
@@ -724,11 +724,15 @@
     box-shadow: var(--shadow-glow), var(--shadow);
   }
   .hero-head {
-    display: block;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(240px, 315px);
+    gap: 22px;
+    align-items: start;
   }
   .hero-text {
     text-align: left;
     padding-left: 10px;
+    min-width: 0;
   }
   .drop-ico {
     display: flex;
@@ -1189,10 +1193,12 @@
 
   .owner-card {
     width: 100%;
+    min-width: 0;
     display: grid;
     grid-template-columns: minmax(0, 1fr) 88px;
     gap: 14px;
     align-items: center;
+    justify-self: end;
     padding: 12px 14px;
     border-radius: 20px;
     background: rgba(7, 17, 31, 0.66);
@@ -1270,11 +1276,16 @@
   /* responsive */
   @media (max-width: 860px) {
     .hero-head {
-      display: block;
+      grid-template-columns: 1fr;
+      gap: 16px;
     }
     .hero-text {
       padding-left: 0;
       text-align: center;
+    }
+    .owner-card {
+      max-width: 520px;
+      justify-self: center;
     }
     .sub {
       margin-inline: auto;

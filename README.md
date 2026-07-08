@@ -75,7 +75,7 @@ macOS/Linux real artifacts are built by GitHub Actions:
 .github/workflows/desktop-release.yml
 ```
 
-Run it manually with **Actions -> DucDrop desktop builds -> Run workflow**, or push a tag like `v1.1.3`.
+Run it manually with **Actions -> DucDrop desktop builds -> Run workflow**, or push a tag like `v1.1.4`.
 
 ## License notes
 
