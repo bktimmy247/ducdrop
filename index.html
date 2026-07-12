@@ -184,8 +184,32 @@ body:after{animation:gridGlide 22s linear infinite;}
   .real-product-shot:before{animation-duration:4.2s!important;opacity:.62!important}
   .real-product-shot{animation-duration:8.5s!important}
 }
+
+/* --- Tôm patch: Remio-inspired starfield + comet background --- */
+.cosmic-bg{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden;opacity:.9}
+.cosmic-bg:before{content:"";position:absolute;inset:0;background:
+  radial-gradient(circle at 9% 18%, rgba(255,255,255,.72) 0 1px, transparent 2px),
+  radial-gradient(circle at 22% 64%, rgba(121,231,255,.62) 0 1px, transparent 2px),
+  radial-gradient(circle at 38% 28%, rgba(255,255,255,.46) 0 1px, transparent 2px),
+  radial-gradient(circle at 58% 18%, rgba(169,186,255,.68) 0 1px, transparent 2px),
+  radial-gradient(circle at 78% 36%, rgba(255,255,255,.5) 0 1px, transparent 2px),
+  radial-gradient(circle at 88% 72%, rgba(121,231,255,.58) 0 1px, transparent 2px),
+  radial-gradient(circle at 50% 82%, rgba(255,255,255,.42) 0 1px, transparent 2px);
+  background-size:520px 680px,460px 590px,620px 760px,540px 660px,500px 700px,620px 620px,560px 720px;
+  animation:starTwinkle 5.5s ease-in-out infinite alternate, starDrift 38s linear infinite;filter:drop-shadow(0 0 5px rgba(169,186,255,.45))}
+.cosmic-bg:after{content:"";position:absolute;left:8%;right:8%;top:7%;height:42%;border-radius:50%;border:1px solid rgba(205,214,255,.10);border-bottom-color:transparent;border-left-color:transparent;transform:rotate(-8deg);opacity:.75}
+.star-pop{position:absolute;width:3px;height:3px;border-radius:50%;background:#fff;box-shadow:0 0 10px rgba(255,255,255,.9),0 0 22px rgba(121,231,255,.55);opacity:0;animation:starPop 4.8s ease-in-out infinite}.star-pop.s1{left:18%;top:20%;animation-delay:.2s}.star-pop.s2{left:72%;top:22%;animation-delay:1.4s}.star-pop.s3{left:84%;top:46%;animation-delay:2.3s}.star-pop.s4{left:31%;top:70%;animation-delay:3.1s}.star-pop.s5{left:53%;top:38%;animation-delay:4s}
+.comet{position:absolute;right:-18%;top:13%;width:180px;height:2px;border-radius:999px;background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,.95),rgba(121,231,255,.75));box-shadow:0 0 18px rgba(121,231,255,.55);transform:rotate(-32deg);opacity:0;animation:cometSweep 9s cubic-bezier(.25,.1,.2,1) infinite}.comet:after{content:"";position:absolute;right:0;top:50%;width:6px;height:6px;border-radius:50%;background:#fff;transform:translateY(-50%);box-shadow:0 0 18px #fff,0 0 32px rgba(121,231,255,.9)}
+@keyframes starTwinkle{0%{opacity:.42}55%{opacity:.9}100%{opacity:.58}}
+@keyframes starDrift{to{background-position:80px 120px,-70px 110px,90px -80px,-90px -60px,60px 90px,-80px 60px,100px 40px}}
+@keyframes starPop{0%,72%,100%{opacity:0;transform:scale(.45)}8%,18%{opacity:.95;transform:scale(1.25)}26%{opacity:.28;transform:scale(.75)}}
+@keyframes cometSweep{0%,62%{opacity:0;transform:translate3d(0,0,0) rotate(-32deg)}68%{opacity:.95}84%{opacity:.72;transform:translate3d(-132vw,68vh,0) rotate(-32deg)}100%{opacity:0;transform:translate3d(-145vw,75vh,0) rotate(-32deg)}}
+@media(max-width:860px){.cosmic-bg{opacity:.72}.cosmic-bg:after{top:8%;height:34%;left:-20%;right:-20%;opacity:.55}.comet{width:130px;animation-duration:8s}.star-pop{width:2.5px;height:2.5px}}
+@media(prefers-reduced-motion:reduce){.cosmic-bg:before,.star-pop,.comet{animation:none!important}.star-pop{opacity:.35}.comet{display:none}}
+
 </style>
 </head><body>
+<div class="cosmic-bg" aria-hidden="true"><span class="star-pop s1"></span><span class="star-pop s2"></span><span class="star-pop s3"></span><span class="star-pop s4"></span><span class="star-pop s5"></span><span class="comet"></span></div>
 <nav class="nav"><a class="brand" href="#"><span class="logo"></span>VibeLab</a><div class="links"><a href="#tools">Tools</a><a href="#workflows">Workflows</a><a href="#start">Start</a></div><div class="lang-toggle" aria-label="Language"><button class="lang-btn is-active" data-lang="vi" type="button" aria-label="Tiếng Việt" title="Tiếng Việt">🇻🇳</button><button class="lang-btn" data-lang="en" type="button" aria-label="English" title="English">🇬🇧</button></div><a class="pill" href="#start">Thử ngay</a></nav>
 <header class="hero wrap"><div class="eyebrow"><span class="spark"></span>AI tools for real work</div><h1><span class="grad">Công cụ AI nhỏ, dùng được ngay.</span></h1><p>PDF sang Word, tải video, bot tự động và các tool nội bộ — gom trong một hub gọn cho người làm việc thực chiến ở Việt Nam.</p><div class="ctas"><a class="btn primary" href="#tools">Khám phá tool</a><a class="btn secondary" href="#workflows">Xem workflow</a></div><div class="chips"><span class="chip"><b>PDF2Word</b> scan tiếng Việt</span><span class="chip"><b>DucDrop</b> video/MP3/phụ đề</span><span class="chip"><b>Custom</b> tool theo việc thật</span></div>
 <div class="intent-panel motion-card">
