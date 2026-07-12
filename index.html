@@ -138,6 +138,31 @@ body:after{animation:gridGlide 22s linear infinite;}
 .proof-showcase{padding:90px 0;border-bottom:1px solid rgba(169,186,255,.10);background:radial-gradient(circle at 50% 0%,rgba(121,231,255,.08),transparent 28rem)}.proof-head{max-width:760px;margin:0 auto 34px;text-align:center}.proof-head h2{font-size:clamp(36px,5vw,70px);line-height:1;letter-spacing:-.06em;margin:10px 0 14px}.proof-head p{color:var(--muted);font-size:18px;line-height:1.65}.proof-cases{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.proof-case{position:relative;overflow:hidden;border:1px solid var(--line);border-radius:30px;background:linear-gradient(180deg,rgba(169,186,255,.08),rgba(255,255,255,.032));padding:24px;min-height:250px;box-shadow:0 22px 70px rgba(0,0,0,.18);transition:.28s}.proof-case:hover{transform:translateY(-6px);border-color:var(--line2);box-shadow:0 30px 90px rgba(50,72,255,.18)}.proof-case:before{content:"";position:absolute;inset:-40% -20% auto;height:190px;background:radial-gradient(circle,rgba(121,231,255,.18),transparent 65%);transform:rotate(-8deg)}.proof-case .mini-tag{position:relative;display:inline-flex;border:1px solid rgba(255,255,255,.14);border-radius:999px;padding:7px 10px;color:var(--accent);font-size:11px;font-weight:950;letter-spacing:.08em;text-transform:uppercase;background:rgba(4,4,12,.45)}.proof-case h3{position:relative;margin:18px 0 12px;font-size:24px;letter-spacing:-.04em}.proof-case p{position:relative;color:var(--muted);line-height:1.6;margin:0}.proof-flow{position:relative;margin-top:22px;display:grid;gap:9px}.flow-row{display:flex;align-items:center;justify-content:space-between;gap:10px;border:1px solid rgba(255,255,255,.10);border-radius:14px;background:rgba(255,255,255,.045);padding:10px 12px;color:rgba(238,242,255,.8);font-size:13px;font-weight:800}.flow-row b{color:#fff}.flow-row .ok{color:var(--green)}.contact-strip{margin-top:30px;border:1px solid rgba(181,194,255,.2);border-radius:28px;padding:20px;background:rgba(255,255,255,.045);display:flex;align-items:center;justify-content:space-between;gap:18px}.contact-strip span{color:var(--muted)}
 @media(max-width:860px){.intent-panel{grid-template-columns:1fr;text-align:center;padding:16px;margin-top:26px}.intent-actions{justify-content:center}.intent-action{width:100%;text-align:center}.proof-showcase{padding:66px 0}.proof-cases{grid-template-columns:1fr}.contact-strip{display:grid;text-align:center}.proof-case{min-height:auto}}
 
+
+/* --- Tôm patch: smoother mobile hero glow/motion --- */
+.real-product-shot{
+  animation:mockupFloatSmooth 10s cubic-bezier(.45,0,.25,1) infinite !important;
+  will-change:transform;
+  box-shadow:0 38px 130px rgba(0,0,0,.58),0 0 88px rgba(126,142,255,.25) !important;
+}
+.real-product-shot:before{
+  opacity:.55;
+  animation:mockupSheenSmooth 9.5s cubic-bezier(.45,0,.25,1) infinite !important;
+  will-change:transform,opacity;
+}
+.real-product-shot:after{display:none!important}
+.real-product-shot img{
+  animation:imageDriftSmooth 14s cubic-bezier(.45,0,.25,1) infinite !important;
+  will-change:transform;
+}
+@keyframes mockupFloatSmooth{0%,100%{transform:translate3d(0,0,0) scale(1)}50%{transform:translate3d(0,-7px,0) scale(1.006)}}
+@keyframes mockupSheenSmooth{0%,18%{opacity:.18;transform:translate3d(-16%,0,0)}50%{opacity:.62;transform:translate3d(0,0,0)}82%,100%{opacity:.18;transform:translate3d(16%,0,0)}}
+@keyframes imageDriftSmooth{0%,100%{transform:translate3d(0,0,0) scale(1)}50%{transform:translate3d(0,-2px,0) scale(1.006)}}
+@media(max-width:860px){
+  .real-product-shot{animation-duration:11.5s!important;box-shadow:0 28px 90px rgba(0,0,0,.54),0 0 62px rgba(126,142,255,.22)!important}
+  .real-product-shot:before{animation-duration:12s!important;opacity:.38}
+  .real-product-shot img{animation-duration:16s!important}
+}
 </style>
 </head><body>
 <nav class="nav"><a class="brand" href="#"><span class="logo"></span>VibeLab</a><div class="links"><a href="#tools">Tools</a><a href="#workflows">Workflows</a><a href="#start">Start</a></div><div class="lang-toggle" aria-label="Language"><button class="lang-btn is-active" data-lang="vi" type="button" aria-label="Tiếng Việt" title="Tiếng Việt">🇻🇳</button><button class="lang-btn" data-lang="en" type="button" aria-label="English" title="English">🇬🇧</button></div><a class="pill" href="#start">Thá»­ ngay</a></nav>
