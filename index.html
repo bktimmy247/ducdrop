@@ -207,6 +207,30 @@ body:after{animation:gridGlide 22s linear infinite;}
 @media(max-width:860px){.cosmic-bg{opacity:.72}.cosmic-bg:after{top:8%;height:34%;left:-20%;right:-20%;opacity:.55}.comet{width:130px;animation-duration:8s}.star-pop{width:2.5px;height:2.5px}}
 @media(prefers-reduced-motion:reduce){.cosmic-bg:before,.star-pop,.comet{animation:none!important}.star-pop{opacity:.35}.comet{display:none}}
 
+
+/* --- Tôm patch: subtler comet, less fake --- */
+.comet{
+  width:92px!important;
+  height:1px!important;
+  right:-12%!important;
+  top:15%!important;
+  opacity:0;
+  background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,.34),rgba(121,231,255,.46),rgba(255,255,255,.72))!important;
+  box-shadow:0 0 8px rgba(121,231,255,.22)!important;
+  filter:blur(.15px);
+  animation:cometSweepSubtle 14s cubic-bezier(.32,.02,.18,1) infinite!important;
+}
+.comet:after{
+  width:3px!important;height:3px!important;
+  box-shadow:0 0 8px rgba(255,255,255,.85),0 0 16px rgba(121,231,255,.55)!important;
+}
+@keyframes cometSweepSubtle{
+  0%,70%{opacity:0;transform:translate3d(0,0,0) rotate(-32deg)}
+  74%{opacity:.62}
+  88%{opacity:.46;transform:translate3d(-118vw,58vh,0) rotate(-32deg)}
+  100%{opacity:0;transform:translate3d(-128vw,64vh,0) rotate(-32deg)}
+}
+@media(max-width:860px){.comet{width:72px!important;animation-duration:15s!important;opacity:0}.comet:after{width:2.5px!important;height:2.5px!important}}
 </style>
 </head><body>
 <div class="cosmic-bg" aria-hidden="true"><span class="star-pop s1"></span><span class="star-pop s2"></span><span class="star-pop s3"></span><span class="star-pop s4"></span><span class="star-pop s5"></span><span class="comet"></span></div>
