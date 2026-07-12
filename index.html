@@ -231,10 +231,24 @@ body:after{animation:gridGlide 22s linear infinite;}
   100%{opacity:0;transform:translate3d(-128vw,64vh,0) rotate(-32deg)}
 }
 @media(max-width:860px){.comet{width:72px!important;animation-duration:15s!important;opacity:0}.comet:after{width:2.5px!important;height:2.5px!important}}
+
+/* --- Tôm patch: non-sticky header + product dropdown --- */
+.nav{position:absolute!important;top:16px!important;}
+.nav-menu{align-items:center}.product-menu{position:relative}.product-menu summary{list-style:none;cursor:pointer;color:var(--muted);font-weight:800}.product-menu summary::-webkit-details-marker{display:none}.product-menu summary:after{content:"⌄";margin-left:6px;color:var(--accent);font-size:12px}.product-dropdown{position:absolute;top:32px;left:-18px;min-width:178px;padding:10px;border:1px solid var(--line);border-radius:18px;background:rgba(7,8,22,.94);backdrop-filter:blur(18px);box-shadow:0 24px 70px rgba(0,0,0,.35);display:grid;gap:4px;z-index:60}.product-dropdown a{padding:10px 12px;border-radius:12px;color:var(--muted);font-weight:850}.product-dropdown a:hover{background:rgba(169,186,255,.11);color:#fff}.product-menu:not([open]) .product-dropdown{display:none}.nav .pill{display:none!important}
+@media(max-width:860px){
+  .nav{position:absolute!important;top:14px!important;width:calc(100vw - 28px)!important;max-width:calc(100vw - 28px)!important;left:14px!important;right:14px!important;transform:none!important;border-radius:24px!important;display:grid!important;grid-template-columns:1fr auto!important;gap:10px!important;padding:10px!important;overflow:visible!important;}
+  .brand{grid-column:1;min-width:0}.lang-toggle{grid-column:2;justify-self:end}.links.nav-menu{grid-column:1/-1;display:flex!important;gap:14px!important;justify-content:center!important;font-size:13px!important;padding-top:2px;border-top:1px solid rgba(181,194,255,.13)}
+  .product-dropdown{left:50%;transform:translateX(-50%);top:28px;min-width:160px;text-align:left}.hero{padding-top:142px!important}
+}
+
 </style>
 </head><body>
 <div class="cosmic-bg" aria-hidden="true"><span class="star-pop s1"></span><span class="star-pop s2"></span><span class="star-pop s3"></span><span class="star-pop s4"></span><span class="star-pop s5"></span><span class="comet"></span></div>
-<nav class="nav"><a class="brand" href="#"><span class="logo"></span>VibeLab</a><div class="links"><a href="#tools">Tools</a><a href="#workflows">Workflows</a><a href="#start">Start</a></div><div class="lang-toggle" aria-label="Language"><button class="lang-btn is-active" data-lang="vi" type="button" aria-label="Tiếng Việt" title="Tiếng Việt">🇻🇳</button><button class="lang-btn" data-lang="en" type="button" aria-label="English" title="English">🇬🇧</button></div><a class="pill" href="#start">Thử ngay</a></nav>
+<nav class="nav"><a class="brand" href="#"><span class="logo"></span>VibeLab</a><div class="links nav-menu">
+  <details class="product-menu"><summary>Sản phẩm</summary><div class="product-dropdown"><a href="/pdf2docx/">PDF2Word</a><a href="/ducdrop/">DucDrop</a><a href="#start">Tool riêng</a></div></details>
+  <a href="#workflows">Workflow</a>
+  <a href="#start">Đặt tool</a>
+</div><div class="lang-toggle" aria-label="Language"><button class="lang-btn is-active" data-lang="vi" type="button" aria-label="Tiếng Việt" title="Tiếng Việt">🇻🇳</button><button class="lang-btn" data-lang="en" type="button" aria-label="English" title="English">🇬🇧</button></div><a class="pill" href="#start">Thử ngay</a></nav>
 <header class="hero wrap"><div class="eyebrow"><span class="spark"></span>AI tools for real work</div><h1><span class="grad">Công cụ AI nhỏ, dùng được ngay.</span></h1><p>PDF sang Word, tải video, bot tự động và các tool nội bộ — gom trong một hub gọn cho người làm việc thực chiến ở Việt Nam.</p><div class="ctas"><a class="btn primary" href="#tools">Khám phá tool</a><a class="btn secondary" href="#workflows">Xem workflow</a></div><div class="chips"><span class="chip"><b>PDF2Word</b> scan tiếng Việt</span><span class="chip"><b>DucDrop</b> video/MP3/phụ đề</span><span class="chip"><b>Custom</b> tool theo việc thật</span></div>
 <div class="intent-panel motion-card">
   <div class="intent-copy"><strong data-i18n data-vi="Anh cần xử lý việc gì trước?" data-en="What do you need to handle first?">Anh cần xử lý việc gì trước?</strong><span data-i18n data-vi="Chọn đúng nhu cầu để đi thẳng vào tool, không phải đọc cả trang." data-en="Pick the job and jump straight to the right tool — no need to read the whole page.">Chọn đúng nhu cầu để đi thẳng vào tool, không phải đọc cả trang.</span></div>
@@ -312,7 +326,7 @@ body:after{animation:gridGlide 22s linear infinite;}
   function apply(lang){
     const t=lang==='en'?en:vi;
     document.documentElement.lang=lang; document.title=t.title;
-    $$('.links a').forEach((a,i)=>a.textContent=t.nav[i]||a.textContent); text('.nav .pill',t.nav[3]);
+    $$('.links > a').forEach((a,i)=>a.textContent=t.nav[i+1]||a.textContent); text('.nav .pill',t.nav[3]);
     text('.eyebrow',t.hero[0]); text('.hero h1 .grad',t.hero[1]); text('.hero>p',t.hero[2]); text('.hero .ctas .btn.primary',t.hero[3]); text('.hero .ctas .btn.secondary',t.hero[4]);
     $$('.chip').forEach((el,i)=>{if(t.chips[i]) el.textContent=t.chips[i]});
     $$('.metric').forEach((el,i)=>{const m=t.metrics[i]; if(!m)return; const b=el.querySelector('b'),sp=el.querySelector('span'),sm=el.querySelector('small'); if(b)b.textContent=m[0]; if(sp)sp.textContent=m[1]; if(sm)sm.textContent=m[2];});
@@ -342,6 +356,23 @@ body:after{animation:gridGlide 22s linear infinite;}
   }
   document.querySelectorAll('.lang-btn').forEach(btn=>btn.addEventListener('click',()=>setTimeout(applyDataI18n,0)));
   applyDataI18n();
+})();
+</script>
+
+
+<script>
+(() => {
+  function patchHeaderLang(){
+    let lang='vi'; try{lang=localStorage.getItem('vibelab-lang')||'vi'}catch(e){}
+    const vi=['Sản phẩm','Workflow','Đặt tool','Tool riêng'];
+    const en=['Products','Workflows','Request tool','Custom tool'];
+    const t=lang==='en'?en:vi;
+    const summary=document.querySelector('.product-menu summary'); if(summary) summary.childNodes[0].nodeValue=t[0];
+    const links=[...document.querySelectorAll('.nav-menu>a')]; if(links[0]) links[0].textContent=t[1]; if(links[1]) links[1].textContent=t[2];
+    const dd=[...document.querySelectorAll('.product-dropdown a')]; if(dd[0]) dd[0].textContent='PDF2Word'; if(dd[1]) dd[1].textContent='DucDrop'; if(dd[2]) dd[2].textContent=t[3];
+  }
+  document.querySelectorAll('.lang-btn').forEach(btn=>btn.addEventListener('click',()=>setTimeout(patchHeaderLang,10)));
+  patchHeaderLang();
 })();
 </script>
 
