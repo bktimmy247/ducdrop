@@ -86,9 +86,30 @@ body:after{animation:gridGlide 22s linear infinite;}
   *,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
   .sec,.proof,.cta,.footer{opacity:1!important;transform:none!important}
 }
+
+/* --- Tôm patch: VI/EN language toggle --- */
+.lang-toggle{display:flex;align-items:center;gap:3px;padding:3px;border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.055)}
+.lang-btn{border:0;border-radius:999px;padding:7px 9px;background:transparent;color:var(--muted);font-weight:950;font-size:12px;cursor:pointer;letter-spacing:.04em;transition:.2s}
+.lang-btn.is-active{background:rgba(238,242,255,.92);color:#05071a;box-shadow:0 8px 20px rgba(169,186,255,.18)}
+.lang-btn:hover{color:#fff}.lang-btn.is-active:hover{color:#05071a}
+@media(max-width:860px){.lang-toggle{margin-left:auto}.lang-btn{padding:7px 8px;font-size:11px}.nav{gap:8px}.brand{gap:8px}.brand span:last-child{max-width:88px;overflow:hidden;text-overflow:ellipsis}}
+
+
+/* --- Tôm patch: mobile language toggle click fix --- */
+.lang-toggle,.lang-btn{position:relative;z-index:30;pointer-events:auto}.nav .brand,.nav .pill{position:relative;z-index:1}
+@media(max-width:860px){.nav .pill{font-size:12px;padding:8px 10px}.brand{font-size:14px}.lang-toggle{flex-shrink:0}.lang-btn{min-width:32px}}
+
+
+/* --- Tôm patch: viewport/mobile nav normalization --- */
+@media(max-width:860px){
+  .nav{width:calc(100% - 20px)!important;left:10px!important;right:10px!important;transform:none!important;justify-content:space-between!important;padding:8px 9px!important;}
+  .nav .pill{display:none!important;}
+  .lang-toggle{margin-left:0!important;}
+}
+
 </style>
 </head><body>
-<nav class="nav"><a class="brand" href="#"><span class="logo"></span>VibeLab</a><div class="links"><a href="#tools">Tools</a><a href="#workflows">Workflows</a><a href="#start">Start</a></div><a class="pill" href="#start">Thá»­ ngay</a></nav>
+<nav class="nav"><a class="brand" href="#"><span class="logo"></span>VibeLab</a><div class="links"><a href="#tools">Tools</a><a href="#workflows">Workflows</a><a href="#start">Start</a></div><div class="lang-toggle" aria-label="Language"><button class="lang-btn is-active" data-lang="vi" type="button">VI</button><button class="lang-btn" data-lang="en" type="button">EN</button></div><a class="pill" href="#start">Thá»­ ngay</a></nav>
 <header class="hero wrap"><div class="eyebrow"><span class="spark"></span>AI tools for real work</div><h1><span class="grad">CÃ´ng cá»¥ AI nhá», dÃ¹ng Ä‘Æ°á»£c ngay.</span></h1><p>PDF sang Word, táº£i video, bot tá»± Ä‘á»™ng vÃ  cÃ¡c tool ná»™i bá»™ â€” gom trong má»™t hub gá»n cho ngÆ°á»i lÃ m viá»‡c thá»±c chiáº¿n á»Ÿ Viá»‡t Nam.</p><div class="ctas"><a class="btn primary" href="#tools">KhÃ¡m phÃ¡ tool</a><a class="btn secondary" href="#workflows">Xem workflow</a></div><div class="chips"><span class="chip"><b>PDF2Word</b> scan tiáº¿ng Viá»‡t</span><span class="chip"><b>DucDrop</b> video/MP3/phá»¥ Ä‘á»</span><span class="chip"><b>Custom</b> tool theo viá»‡c tháº­t</span></div><div class="stage real-mockup-stage">
   <div class="halo"></div>
   <figure class="real-product-shot">
@@ -116,4 +137,76 @@ body:after{animation:gridGlide 22s linear infinite;}
   els.forEach(el=>io.observe(el));
 })();
 </script>
+
+<script>
+(() => {
+  const dict = {
+    vi: {
+      title: 'VibeLab — Công cụ AI nhỏ, dùng được ngay',
+      navTools: 'Tools', navWorkflows: 'Workflow', navStart: 'Bắt đầu', navCta: 'Thử ngay',
+      eyebrow: 'AI tools for real work',
+      heroTitle: 'Công cụ AI nhỏ, dùng được ngay.',
+      heroText: 'PDF sang Word, tải video, bot tự động và các tool nội bộ — gom trong một hub gọn cho người làm việc thực chiến ở Việt Nam.',
+      heroPrimary: 'Khám phá tool', heroSecondary: 'Xem workflow',
+      toolsKicker: 'Product story', toolsTitle: 'Mỗi tool giải quyết một việc rất cụ thể.',
+      toolsText: 'VibeLab không làm một dashboard rối. Mỗi sản phẩm có một mục tiêu rõ: mở lên, làm việc, nhận kết quả.',
+      wfKicker: 'Built for Vietnam workflows', wfTitle: 'Làm cho những việc đang diễn ra hằng ngày.',
+      wfText: 'Tài liệu tiếng Việt, bán hàng qua chat, demo cho khách, tool nội bộ cho team nhỏ — VibeLab ưu tiên những việc có kết quả nhìn thấy được.',
+      startKicker: 'Start simple', startTitle: 'Bắt đầu trong ba bước.',
+      startText: 'Chọn một sản phẩm có sẵn, thử bằng dữ liệu thật, rồi nâng cấp thành tool riêng nếu workflow của anh cần nhiều hơn.',
+      ctaTitle: 'Có việc thật cần làm nhanh hơn?',
+      ctaText: 'Chọn một sản phẩm có sẵn, hoặc biến workflow lặp lại của anh thành một tool nhỏ dùng được ngay.',
+      ctaPdf: 'Thử PDF2Word', ctaDrop: 'Xem DucDrop',
+      footerText: 'AI tools for real work — nhỏ, rõ, dùng được ngay.'
+    },
+    en: {
+      title: 'VibeLab — Small AI tools, ready to use',
+      navTools: 'Tools', navWorkflows: 'Workflows', navStart: 'Start', navCta: 'Try now',
+      eyebrow: 'AI tools for real work',
+      heroTitle: 'Small AI tools, ready to use.',
+      heroText: 'PDF to Word, video downloads, automation bots, and internal AI utilities — gathered in a clean hub for practical Vietnam workflows.',
+      heroPrimary: 'Explore tools', heroSecondary: 'View workflows',
+      toolsKicker: 'Product story', toolsTitle: 'Each tool solves one specific job.',
+      toolsText: 'VibeLab is not another bloated dashboard. Each product has a clear goal: open it, do the work, get the result.',
+      wfKicker: 'Built for Vietnam workflows', wfTitle: 'Made for everyday operational work.',
+      wfText: 'Vietnamese documents, chat-based sales, client demos, and internal tools for small teams — VibeLab focuses on visible outcomes.',
+      startKicker: 'Start simple', startTitle: 'Start in three steps.',
+      startText: 'Pick an existing product, test it with real data, then upgrade into a custom tool when your workflow needs more.',
+      ctaTitle: 'Have real work that should be faster?',
+      ctaText: 'Use an existing product, or turn your repetitive workflow into a small tool that works right away.',
+      ctaPdf: 'Try PDF2Word', ctaDrop: 'View DucDrop',
+      footerText: 'AI tools for real work — small, clear, ready to use.'
+    }
+  };
+  const set = (sel, val) => { const el = document.querySelector(sel); if (el && val) el.textContent = val; };
+  function apply(lang){
+    const t = dict[lang] || dict.vi;
+    document.documentElement.lang = lang === 'en' ? 'en' : 'vi';
+    document.title = t.title;
+    set('.links a[href="#tools"]', t.navTools);
+    set('.links a[href="#workflows"]', t.navWorkflows);
+    set('.links a[href="#start"]', t.navStart);
+    set('.nav .pill', t.navCta);
+    set('.eyebrow', t.eyebrow);
+    set('.hero h1 .grad', t.heroTitle);
+    set('.hero > p', t.heroText);
+    set('.ctas .btn.primary', t.heroPrimary);
+    set('.ctas .btn.secondary', t.heroSecondary);
+    set('#tools .kicker', t.toolsKicker);
+    set('#tools h2', t.toolsTitle);
+    set('#tools p', t.toolsText);
+    const wf = document.querySelector('#workflows');
+    if (wf) { const k=wf.querySelector('.kicker'), h=wf.querySelector('h2'), p=wf.querySelector('p'); if(k)k.textContent=t.wfKicker; if(h)h.textContent=t.wfTitle; if(p)p.textContent=t.wfText; }
+    set('#start .kicker', t.startKicker); set('#start h2', t.startTitle); set('#start p', t.startText);
+    set('.cta h2', t.ctaTitle); set('.cta p', t.ctaText); set('.cta .btn.primary', t.ctaPdf); set('.cta .btn.secondary', t.ctaDrop);
+    const fp = document.querySelector('.footer p'); if (fp) fp.textContent = t.footerText;
+    document.querySelectorAll('.lang-btn').forEach(b=>b.classList.toggle('is-active', b.dataset.lang===lang));
+    try{localStorage.setItem('vibelab-lang', lang)}catch(e){}
+  }
+  document.querySelectorAll('.lang-btn').forEach(btn=>btn.addEventListener('click',()=>apply(btn.dataset.lang)));
+  const saved = (()=>{try{return localStorage.getItem('vibelab-lang')}catch(e){return null}})();
+  apply(saved || 'vi');
+})();
+</script>
+
 </body></html>
