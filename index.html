@@ -279,7 +279,7 @@ body:after{animation:gridGlide 22s linear infinite;}
 </head><body>
 <div class="cosmic-bg" aria-hidden="true"><span class="star-pop s1"></span><span class="star-pop s2"></span><span class="star-pop s3"></span><span class="star-pop s4"></span><span class="star-pop s5"></span><span class="comet"></span></div>
 <nav class="nav"><a class="brand" href="#"><span class="logo"></span>VibeLab</a><div class="links nav-menu">
-  <details class="product-menu"><summary>Sản phẩm</summary><div class="product-dropdown"><a href="/pdf2docx/">PDF2Word</a><a href="/ducdrop/">DucDrop</a><a href="/tomscreenrecorder/">Tôm Screen Recorder</a><a href="/tom-mcp-chatgpt/">ChatGPT MCP Studio</a><a href="#start">Tool riêng</a></div></details>
+  <details class="product-menu"><summary>Sản phẩm</summary><div class="product-dropdown"><a href="/pdf2docx/">PDF2Word</a><a href="/ducdrop/">DucDrop</a><a href="/tomscreenrecorder/">Tôm Screen Recorder</a><a href="/tom-mcp-chatgpt/">Local MCP for ChatGPT</a><a href="#start">Tool riêng</a></div></details>
   <a href="#workflows">Workflow</a>
   <a href="#start">Đặt tool</a>
 </div><div class="lang-toggle" aria-label="Language"><button class="lang-btn is-active" data-lang="vi" type="button" aria-label="Tiếng Việt" title="Tiếng Việt">🇻🇳</button><button class="lang-btn" data-lang="en" type="button" aria-label="English" title="English">🇬🇧</button></div><a class="pill" href="#start">Thử ngay</a></nav>
@@ -403,7 +403,7 @@ body:after{animation:gridGlide 22s linear infinite;}
     const t=lang==='en'?en:vi;
     const summary=document.querySelector('.product-menu summary'); if(summary) summary.childNodes[0].nodeValue=t[0];
     const links=[...document.querySelectorAll('.nav-menu>a')]; if(links[0]) links[0].textContent=t[1]; if(links[1]) links[1].textContent=t[2];
-    const dd=[...document.querySelectorAll('.product-dropdown a')]; if(dd[0]) dd[0].textContent='PDF2Word'; if(dd[1]) dd[1].textContent='DucDrop'; if(dd[2]) dd[2].textContent='Tôm Screen Recorder'; if(dd[3]) dd[3].textContent='ChatGPT MCP Studio'; if(dd[4]) dd[4].textContent=t[3];
+    const dd=[...document.querySelectorAll('.product-dropdown a')]; if(dd[0]) dd[0].textContent='PDF2Word'; if(dd[1]) dd[1].textContent='DucDrop'; if(dd[2]) dd[2].textContent='Tôm Screen Recorder'; if(dd[3]) dd[3].textContent='Local MCP for ChatGPT'; if(dd[4]) dd[4].textContent=t[3];
   }
   document.querySelectorAll('.lang-btn').forEach(btn=>btn.addEventListener('click',()=>setTimeout(patchHeaderLang,10)));
   patchHeaderLang();
