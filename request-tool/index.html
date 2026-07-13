@@ -17,15 +17,15 @@
       <section class="card main">
         <div class="badge">Custom internal tool</div>
         <h1><span class="grad">Đặt tool riêng</span></h1>
-        <p class="lead">Mô tả việc đang làm thủ công, file đầu vào và kết quả mong muốn. VibeLab sẽ xem có thể biến thành tool nhỏ dùng được ngay không.</p>
-        <div class="mini"><strong>Nên ghi rõ</strong><ul><li>Công việc hiện làm bằng tay là gì?</li><li>Đầu vào gồm file/link/dữ liệu nào?</li><li>Kết quả muốn nhận là gì?</li><li>Mỗi ngày/tuần mất bao lâu cho việc này?</li></ul></div>
+        <p class="lead">Gửi mô tả workflow của anh. VibeLab sẽ xem cách biến nó thành một tool nhỏ, rõ việc và dễ dùng.</p>
+        <div class="mini"><strong>Thông tin nên có</strong><ul><li>Việc hiện đang làm thủ công là gì?</li><li>Đầu vào gồm file/link/dữ liệu nào?</li><li>Kết quả muốn nhận là gì?</li><li>Việc này tốn bao nhiêu thời gian mỗi ngày/tuần?</li></ul></div>
       </section>
       <section class="card form">
         <div><label for="name">Tên / cách gọi</label><input id="name" placeholder="Ví dụ: Anh Minh - team sales" /></div>
         <div class="row"><div><label for="contact">Liên hệ</label><input id="contact" placeholder="SĐT / Zalo / Email" /></div><div><label for="priority">Mức cần</label><select id="priority"><option>Bình thường</option><option>Cần sớm</option><option>Rất gấp</option></select></div></div>
-        <div><label for="job">Tool cần xử lý việc gì?</label><textarea id="job" placeholder="Ví dụ: mỗi ngày tải file Excel đơn hàng, lọc khách trùng, tạo báo cáo và gửi Zalo cho quản lý..."></textarea></div>
+        <div><label for="job">Anh muốn tool xử lý việc gì?</label><textarea id="job" placeholder="Ví dụ: mỗi ngày tải file Excel đơn hàng, lọc khách trùng, tạo báo cáo và gửi Zalo cho quản lý..."></textarea></div>
         <div><label for="input">Đầu vào</label><input id="input" placeholder="File Excel, PDF, link web, ảnh, video, form, API..." /></div>
-        <div><label for="output">Kết quả mong muốn</label><input id="output" placeholder="File Word/Excel, dashboard, tin nhắn, báo cáo PDF, bot tự động..." /></div>
+        <div><label for="output">Kết quả cần nhận</label><input id="output" placeholder="File Word/Excel, dashboard, tin nhắn, báo cáo PDF, bot tự động..." /></div>
         <div class="btns"><button class="btn primary" type="button" onclick="sendEmail()">Gửi yêu cầu</button><button class="btn secondary" type="button" onclick="copyBrief()">Copy nội dung</button><a class="btn secondary" id="issueLink" target="_blank" rel="noopener">Gửi qua GitHub</a></div>
         <div class="hint">Form sẽ gửi yêu cầu về hộp thư quản lý của VibeLab. Lần đầu có thể cần xác nhận FormSubmit trong Gmail nhận.</div>
         <div class="status" id="status">Đã gửi yêu cầu. VibeLab sẽ xem và phản hồi qua liên hệ anh/chị để lại.</div>
@@ -35,7 +35,7 @@
   <footer class="footer wrap">VibeLab · Small AI tools for real work</footer>
   <script>
     function val(id){return document.getElementById(id).value.trim()}
-    function brief(){return `Yêu cầu đặt tool riêng - VibeLab\n\nTên/cách gọi: ${val('name')||'(chưa nhập)'}\nLiên hệ: ${val('contact')||'(chưa nhập)'}\nMức cần: ${val('priority')}\n\nTool cần xử lý việc gì?\n${val('job')||'(chưa nhập)'}\n\nĐầu vào:\n${val('input')||'(chưa nhập)'}\n\nKết quả mong muốn:\n${val('output')||'(chưa nhập)'}`}
+    function brief(){return `Yêu cầu đặt tool riêng - VibeLab\n\nTên/cách gọi: ${val('name')||'(chưa nhập)'}\nLiên hệ: ${val('contact')||'(chưa nhập)'}\nMức cần: ${val('priority')}\n\nAnh muốn tool xử lý việc gì?\n${val('job')||'(chưa nhập)'}\n\nĐầu vào:\n${val('input')||'(chưa nhập)'}\n\nKết quả cần nhận:\n${val('output')||'(chưa nhập)'}`}
     function updateIssue(){const title=encodeURIComponent('[VibeLab] Yêu cầu tool riêng'); const body=encodeURIComponent(brief()); document.getElementById('issueLink').href=`https://github.com/bktimmy247/ducdrop/issues/new?title=${title}&body=${body}`}
     async function copyBrief(){await navigator.clipboard.writeText(brief()); document.getElementById('status').style.display='block'; updateIssue()}
     async function sendEmail(){
