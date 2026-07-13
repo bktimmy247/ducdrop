@@ -22,12 +22,12 @@
       </section>
       <section class="card form">
         <div><label for="name">Tên / cách gọi</label><input id="name" placeholder="Ví dụ: Anh Minh - team sales" /></div>
-        <div class="row"><div><label for="contact">Liên hệ</label><input id="contact" placeholder="SĐT / Zalo / Telegram / email" /></div><div><label for="priority">Mức cần</label><select id="priority"><option>Bình thường</option><option>Cần sớm</option><option>Rất gấp</option></select></div></div>
+        <div class="row"><div><label for="contact">Liên hệ</label><input id="contact" placeholder="SĐT / Zalo / Email" /></div><div><label for="priority">Mức cần</label><select id="priority"><option>Bình thường</option><option>Cần sớm</option><option>Rất gấp</option></select></div></div>
         <div><label for="job">Tool cần xử lý việc gì?</label><textarea id="job" placeholder="Ví dụ: mỗi ngày tải file Excel đơn hàng, lọc khách trùng, tạo báo cáo và gửi Zalo cho quản lý..."></textarea></div>
         <div><label for="input">Đầu vào</label><input id="input" placeholder="File Excel, PDF, link web, ảnh, video, form, API..." /></div>
         <div><label for="output">Kết quả mong muốn</label><input id="output" placeholder="File Word/Excel, dashboard, tin nhắn, báo cáo PDF, bot tự động..." /></div>
-        <div class="btns"><button class="btn primary" type="button" onclick="sendTelegram()">Copy & mở Telegram</button><button class="btn secondary" type="button" onclick="copyBrief()">Copy nội dung</button><a class="btn secondary" id="issueLink" target="_blank" rel="noopener">Gửi qua GitHub</a></div>
-        <div class="hint">Bản này chạy trên GitHub Pages tĩnh nên không lưu dữ liệu trên server. Nút Telegram sẽ copy nội dung rồi mở chat @CuongDucAI để gửi; GitHub mở trang tạo issue với nội dung đã soạn sẵn. Nếu cần submit thẳng âm thầm, VibeLab sẽ thêm endpoint riêng sau.</div>
+        <div class="btns"><button class="btn primary" type="button" onclick="sendEmail()">Copy & mở Email</button><button class="btn secondary" type="button" onclick="copyBrief()">Copy nội dung</button><a class="btn secondary" id="issueLink" target="_blank" rel="noopener">Gửi qua GitHub</a></div>
+        <div class="hint">Bản này chạy trên GitHub Pages tĩnh nên không lưu dữ liệu trên server. Nút Email sẽ copy nội dung rồi mở email tới hotro@vibelab.vn; GitHub mở trang tạo issue với nội dung đã soạn sẵn. Nếu cần submit thẳng âm thầm, VibeLab sẽ thêm endpoint riêng sau.</div>
         <div class="status" id="status">Đã copy nội dung.</div>
       </section>
     </div>
@@ -38,7 +38,7 @@
     function brief(){return `Yêu cầu đặt tool riêng - VibeLab\n\nTên/cách gọi: ${val('name')||'(chưa nhập)'}\nLiên hệ: ${val('contact')||'(chưa nhập)'}\nMức cần: ${val('priority')}\n\nTool cần xử lý việc gì?\n${val('job')||'(chưa nhập)'}\n\nĐầu vào:\n${val('input')||'(chưa nhập)'}\n\nKết quả mong muốn:\n${val('output')||'(chưa nhập)'}`}
     function updateIssue(){const title=encodeURIComponent('[VibeLab] Yêu cầu tool riêng'); const body=encodeURIComponent(brief()); document.getElementById('issueLink').href=`https://github.com/bktimmy247/ducdrop/issues/new?title=${title}&body=${body}`}
     async function copyBrief(){await navigator.clipboard.writeText(brief()); document.getElementById('status').style.display='block'; updateIssue()}
-    async function sendTelegram(){await copyBrief(); window.open('https://t.me/CuongDucAI','_blank')}
+    async function sendEmail(){await copyBrief(); const subject=encodeURIComponent('[VibeLab] Yêu cầu tool riêng'); const body=encodeURIComponent(brief()); window.open(`mailto:hotro@vibelab.vn?subject=${subject}&body=${body}`,'_blank')}
     ['name','contact','priority','job','input','output'].forEach(id=>document.getElementById(id).addEventListener('input',updateIssue)); updateIssue();
   </script>
 </body>
