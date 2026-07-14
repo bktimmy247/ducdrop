@@ -1,0 +1,7 @@
+# VibeLab Security Policy
+
+Please report suspected security issues privately to hotro@vibelab.vn.
+
+Include the affected URL, a concise description, non-destructive reproduction steps, and redacted evidence. Do not access unrelated user data, disrupt service, use credential attacks, perform denial-of-service testing, or disclose an issue publicly before remediation coordination.
+
+VibeLab will acknowledge good-faith reports when operationally possible. This policy does not create authorization for active testing beyond normal browsing; request written scope before any active security testing.

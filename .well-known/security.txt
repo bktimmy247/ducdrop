@@ -1,0 +1,5 @@
+Contact: mailto:hotro@vibelab.vn
+Expires: 2027-07-14T00:00:00Z
+Preferred-Languages: vi, en
+Canonical: https://vibelab.vn/.well-known/security.txt
+Policy: https://vibelab.vn/security-policy.txt
