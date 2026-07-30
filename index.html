@@ -286,7 +286,13 @@ body:after{animation:gridGlide 22s linear infinite;}
   .lang-toggle{background:rgba(7,8,22,.38)!important;border:1px solid rgba(190,203,255,.18)!important;box-shadow:none!important;backdrop-filter:blur(10px)!important;}
   .links.nav-menu{background:transparent!important;border-top:0!important;padding-top:0!important;}
   .links.nav-menu a,.product-menu summary{background:rgba(7,8,22,.36)!important;border:1px solid rgba(190,203,255,.18)!important;border-radius:999px!important;padding:8px 14px!important;box-shadow:none!important;backdrop-filter:blur(10px)!important;}
-}/* mobile-header-no-card-end */</style>
+}/* mobile-header-no-card-end */
+/* Original canvas globe/orbit background — inspired spatially, no third-party code/assets. */
+.vibelab-orbit-globe{position:absolute;z-index:0;inset:0;width:100%;height:100%;pointer-events:none;opacity:.8;mask-image:linear-gradient(90deg,transparent 0%,rgba(0,0,0,.08) 28%,#000 59%,#000 100%)}
+.hero>*:not(.vibelab-orbit-globe){position:relative;z-index:1}
+@media(max-width:860px){.vibelab-orbit-globe{opacity:.5;mask-image:linear-gradient(90deg,transparent 0%,rgba(0,0,0,.12) 40%,#000 80%)}}
+@media(prefers-reduced-motion:reduce){.vibelab-orbit-globe{opacity:.62}}
+</style>
 </head><body>
 <div class="cosmic-bg" aria-hidden="true"><span class="star-pop s1"></span><span class="star-pop s2"></span><span class="star-pop s3"></span><span class="star-pop s4"></span><span class="star-pop s5"></span><span class="comet"></span></div>
 <nav class="nav"><a class="brand" href="#"><span class="logo"><img class="lab-icon" src="/assets/brand/vibelab-logo-v2.svg" alt="" width="38" height="38" decoding="async" /></span>VibeLab</a><div class="links nav-menu">
@@ -294,7 +300,7 @@ body:after{animation:gridGlide 22s linear infinite;}
   <a href="#workflows">Workflow</a>
   <a href="/request-tool/">Đặt tool</a>
 </div><div class="lang-toggle" aria-label="Language"><button class="lang-btn is-active" data-lang="vi" type="button" aria-label="Tiếng Việt" title="Tiếng Việt"><span class="flag-icon flag-vn" aria-hidden="true"></span></button><button class="lang-btn" data-lang="en" type="button" aria-label="English" title="English"><span class="flag-icon flag-gb" aria-hidden="true"></span></button></div><a class="pill" href="/request-tool/">Thử ngay</a></nav>
-<header class="hero wrap"><div class="eyebrow"><span class="spark"></span>AI tools for real work</div><h1><span class="grad">Công cụ nhỏ cho việc thật, dùng được ngay.</span></h1><p>PDF sang Word, tải video, bot tự động và các tool nội bộ — gom trong một hub gọn cho người làm việc thực chiến ở Việt Nam.</p><div class="ctas"><a class="btn primary" href="#tools">Khám phá tool</a><a class="btn secondary" href="#workflows">Xem workflow</a></div><div class="chips"><span class="chip"><b>PDF2Word</b> scan tiếng Việt</span><span class="chip"><b>DucDrop</b> video/MP3/phụ đề</span><span class="chip"><b>Custom</b> tool theo việc thật</span></div>
+<header class="hero wrap"><canvas class="vibelab-orbit-globe" id="vibelabOrbitGlobe" aria-hidden="true"></canvas><div class="eyebrow"><span class="spark"></span>AI tools for real work</div><h1><span class="grad">Công cụ nhỏ cho việc thật, dùng được ngay.</span></h1><p>PDF sang Word, tải video, bot tự động và các tool nội bộ — gom trong một hub gọn cho người làm việc thực chiến ở Việt Nam.</p><div class="ctas"><a class="btn primary" href="#tools">Khám phá tool</a><a class="btn secondary" href="#workflows">Xem workflow</a></div><div class="chips"><span class="chip"><b>PDF2Word</b> scan tiếng Việt</span><span class="chip"><b>DucDrop</b> video/MP3/phụ đề</span><span class="chip"><b>Custom</b> tool theo việc thật</span></div>
 <div class="intent-panel motion-card">
   <div class="intent-copy"><strong data-i18n data-vi="Anh cần xử lý việc gì trước?" data-en="What do you need to handle first?">Anh cần xử lý việc gì trước?</strong><span data-i18n data-vi="Chọn đúng nhu cầu để đi thẳng vào tool, không phải đọc cả trang." data-en="Pick the job and jump straight to the right tool — no need to read the whole page.">Chọn đúng nhu cầu để đi thẳng vào tool, không phải đọc cả trang.</span></div>
   <div class="intent-actions"><a class="intent-action primary" href="/pdf2docx/" data-i18n data-vi="Chuyển PDF" data-en="Convert PDF">Chuyển PDF</a><a class="intent-action" href="/ducdrop/" data-i18n data-vi="Tải video/link" data-en="Download video/link">Tải video/link</a><a class="intent-action" href="/request-tool/" data-i18n data-vi="Đặt tool riêng" data-en="Request custom tool">Đặt tool riêng</a></div>
@@ -465,6 +471,23 @@ body:after{animation:gridGlide 22s linear infinite;}
   }
   applyFooter();
   document.querySelectorAll('.lang-btn').forEach(btn=>btn.addEventListener('click',()=>setTimeout(applyFooter,0)));
+})();
+</script>
+
+<script>
+(() => {
+  const canvas=document.getElementById('vibelabOrbitGlobe'); if(!canvas) return;
+  const ctx=canvas.getContext('2d'); if(!ctx) return;
+  const media=matchMedia('(prefers-reduced-motion: reduce)'); let w=0,h=0,raf=0,stopped=false;
+  const resize=()=>{const r=canvas.getBoundingClientRect(),d=Math.min(devicePixelRatio||1,2);w=Math.max(1,Math.round(r.width));h=Math.max(1,Math.round(r.height));canvas.width=w*d;canvas.height=h*d;ctx.setTransform(d,0,0,d,0,0)};
+  const draw=(now)=>{if(stopped)return;ctx.clearRect(0,0,w,h);const cx=w*.92,cy=h*.25,r=Math.min(w,h)*.18,t=media.matches?0:now*.00016;
+    const glow=ctx.createRadialGradient(cx,cy,r*.1,cx,cy,r*1.7);glow.addColorStop(0,'rgba(89,229,255,.19)');glow.addColorStop(.5,'rgba(111,112,255,.07)');glow.addColorStop(1,'rgba(30,18,110,0)');ctx.fillStyle=glow;ctx.beginPath();ctx.arc(cx,cy,r*1.7,0,Math.PI*2);ctx.fill();
+    ctx.save();ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.clip();const fill=ctx.createRadialGradient(cx-r*.36,cy-r*.42,r*.05,cx,cy,r*1.1);fill.addColorStop(0,'rgba(183,248,255,.33)');fill.addColorStop(.3,'rgba(64,178,241,.2)');fill.addColorStop(1,'rgba(20,28,104,.12)');ctx.fillStyle=fill;ctx.fillRect(cx-r,cy-r,r*2,r*2);ctx.strokeStyle='rgba(175,241,255,.27)';ctx.lineWidth=.65;
+    for(let i=-2;i<=2;i++){const y=cy+i*r*.31,v=r*Math.sqrt(Math.max(.08,1-((y-cy)/r)**2));ctx.beginPath();ctx.ellipse(cx,y,r,v*.21,0,0,Math.PI*2);ctx.stroke()}for(let i=-3;i<=3;i++){const x=i*r*.22,u=r*Math.sqrt(Math.max(.08,1-(x/r)**2));ctx.beginPath();ctx.ellipse(cx+x,cy,u*.34,r,0,0,Math.PI*2);ctx.stroke()}ctx.restore();
+    ctx.strokeStyle='rgba(159,239,255,.58)';ctx.shadowColor='rgba(69,215,255,.56)';ctx.shadowBlur=11;ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.stroke();ctx.shadowBlur=0;
+    const orbit=(scale,rot,alpha)=>{ctx.save();ctx.translate(cx,cy);ctx.rotate(rot);ctx.strokeStyle=`rgba(163,229,255,${alpha})`;ctx.lineWidth=1;ctx.beginPath();ctx.ellipse(0,0,r*scale,r*scale*.37,0,0,Math.PI*2);ctx.stroke();ctx.restore()};orbit(1.35,-.48+t*.45,.35);orbit(1.62,.62-t*.3,.22);orbit(1.06,.18+t*.55,.2);
+    const dot=(a,scale,rot,color)=>{const x=Math.cos(a)*r*scale,y=Math.sin(a)*r*scale*.37,px=cx+x*Math.cos(rot)-y*Math.sin(rot),py=cy+x*Math.sin(rot)+y*Math.cos(rot);ctx.fillStyle=color;ctx.shadowColor=color;ctx.shadowBlur=10;ctx.beginPath();ctx.arc(px,py,2.2,0,Math.PI*2);ctx.fill();ctx.shadowBlur=0};dot(t*4.2+.4,1.35,-.48+t*.45,'rgba(235,253,255,.96)');dot(-t*2.7+2.1,1.62,.62-t*.3,'rgba(168,193,255,.9)');dot(t*5.4+4.8,1.06,.18+t*.55,'rgba(125,239,214,.9)');if(!media.matches)raf=requestAnimationFrame(draw)};
+  const ro=new ResizeObserver(resize);ro.observe(canvas);resize();draw(performance.now());media.addEventListener('change',()=>{cancelAnimationFrame(raf);draw(performance.now())});
 })();
 </script>
 </body></html>
