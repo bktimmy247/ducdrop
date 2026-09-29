@@ -42,7 +42,7 @@
 </head>
 <body>
   <canvas id="game"></canvas><div class="edge"></div>
-  <div class="title"><b>ROYAL XIANGQI</b><span>CỜ TƯỚNG 3D · BUILD XQ06-LUXPIECES</span></div>
+  <div class="title"><b>ROYAL XIANGQI</b><span>CỜ TƯỚNG 3D · BUILD XQ07-VISIBILITY</span></div>
   <header class="topbar glass">
     <div class="brand"><span class="mark">帥</span><div><strong>CỜ TƯỚNG 3D</strong><small>THREE.JS · WEBGL</small></div></div>
     <div class="actions">
@@ -285,25 +285,26 @@ for(let i=0;i<(MOBILE?10:20);i++){
 
 // Real 3D pavilion architecture: roof, rails, bridge and layered mountain silhouettes.
 const roofMat=new THREE.MeshPhysicalMaterial({color:0x2a201c,roughness:.34,metalness:.06,clearcoat:.42,clearcoatRoughness:.18});
-function addRoof(z,flip=false){
-  const roof=new THREE.Mesh(new THREE.CylinderGeometry(7.2,8.4,.38,4),roofMat);
+function addDistantRoof(x,z,scale=.62){
+  const roof=new THREE.Mesh(new THREE.CylinderGeometry(4.8,5.6,.34,4),roofMat);
   roof.rotation.y=Math.PI/4;
-  roof.scale.set(1.18,.42,.72);
-  roof.position.set(0,6.0,z);
-  roof.rotation.x=flip?.03:-.03;
+  roof.scale.set(1.18*scale,.42*scale,.72*scale);
+  roof.position.set(x,6.9,z);
   roof.castShadow=true;
   env.add(roof);
 
-  const ridge=new THREE.Mesh(new THREE.BoxGeometry(15.8,.20,.24),beamMat);
-  ridge.position.set(0,6.23,z);ridge.castShadow=true;env.add(ridge);
+  const ridge=new THREE.Mesh(new THREE.BoxGeometry(10.2*scale,.18,.22),beamMat);
+  ridge.position.set(x,7.08,z);ridge.castShadow=true;env.add(ridge);
 
-  for(const x of [-7.2,7.2]){
-    const finial=new THREE.Mesh(new THREE.ConeGeometry(.18,.8,8),new THREE.MeshStandardMaterial({color:0x7e5328,metalness:.35,roughness:.34}));
-    finial.position.set(x,6.05,z);finial.rotation.z=x<0?Math.PI/2:-Math.PI/2;env.add(finial);
+  for(const sx of [-1,1]){
+    const finial=new THREE.Mesh(new THREE.ConeGeometry(.14,.56,8),new THREE.MeshStandardMaterial({color:0x7e5328,metalness:.35,roughness:.34}));
+    finial.position.set(x+sx*4.6*scale,6.95,z);
+    finial.rotation.z=sx<0?Math.PI/2:-Math.PI/2;
+    env.add(finial);
   }
 }
-addRoof(-7.8,false);
-if(!MOBILE)addRoof(7.8,true);
+// Keep architecture visible as scenery, never between camera and board.
+if(!MOBILE)addDistantRoof(-11.8,12.8,.72);
 
 const railMat=new THREE.MeshPhysicalMaterial({color:0x3a2015,roughness:.46,clearcoat:.24});
 function addRailSegment(x1,z1,x2,z2){
@@ -369,12 +370,20 @@ const glyph={
 };
 const pieceNames={K:'Tướng',A:'Sĩ',E:'Tượng',H:'Mã',R:'Xe',C:'Pháo',P:'Tốt'};
 function topTexture(char,color){
-  const c=document.createElement('canvas');c.width=512;c.height=512;const ctx=c.getContext('2d');
-  ctx.clearRect(0,0,512,512);
-  ctx.strokeStyle=color==='r'?'#b72824':'#e7c67d';ctx.lineWidth=16;ctx.beginPath();ctx.arc(256,256,188,0,Math.PI*2);ctx.stroke();
-  ctx.strokeStyle=color==='r'?'rgba(183,40,36,.35)':'rgba(231,198,125,.35)';ctx.lineWidth=5;ctx.beginPath();ctx.arc(256,256,156,0,Math.PI*2);ctx.stroke();
-  ctx.fillStyle=color==='r'?'#b72c27':'#f0cf86';ctx.textAlign='center';ctx.textBaseline='middle';ctx.font='900 225px "Songti SC","STSong","Noto Serif CJK SC",serif';ctx.fillText(char,256,268);
-  const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;t.anisotropy=Math.min(8,renderer.capabilities.getMaxAnisotropy());return t;
+  const c=document.createElement('canvas');c.width=768;c.height=768;const ctx=c.getContext('2d');
+  ctx.clearRect(0,0,768,768);
+  const ink=color==='r'?'#a61f1b':'#15110e';
+  const ring=color==='r'?'#a92a22':'#3a2a1b';
+  ctx.strokeStyle=ring;ctx.lineWidth=24;ctx.beginPath();ctx.arc(384,384,282,0,Math.PI*2);ctx.stroke();
+  ctx.strokeStyle=color==='r'?'rgba(169,42,34,.42)':'rgba(58,42,27,.34)';ctx.lineWidth=8;ctx.beginPath();ctx.arc(384,384,230,0,Math.PI*2);ctx.stroke();
+  ctx.textAlign='center';ctx.textBaseline='middle';
+  ctx.font='900 360px "Songti SC","STSong","Noto Serif CJK SC","SimSun",serif';
+  ctx.lineJoin='round';ctx.lineWidth=15;ctx.strokeStyle=color==='r'?'rgba(85,17,15,.24)':'rgba(255,248,226,.28)';
+  ctx.strokeText(char,384,405);
+  ctx.fillStyle=ink;ctx.shadowColor=color==='r'?'rgba(90,15,10,.28)':'rgba(0,0,0,.22)';ctx.shadowBlur=4;ctx.shadowOffsetY=3;
+  ctx.fillText(char,384,405);
+  ctx.shadowColor='transparent';
+  const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;t.anisotropy=Math.min(12,renderer.capabilities.getMaxAnisotropy());return t;
 }
 const textureCache={};
 function getTexture(color,type){const k=color+type;return textureCache[k]||(textureCache[k]=topTexture(glyph[color][type],color))}
@@ -410,8 +419,8 @@ function pieceMesh(p){
     color:dark?0xc7a15c:0x8d5b2e,roughness:.24,metalness:.56,clearcoat:.55
   });
   const faceMat=new THREE.MeshPhysicalMaterial({
-    color:dark?0x202124:0xead3a6,map:getTexture(p.color,p.type),
-    roughness:.14,metalness:.01,clearcoat:.96,clearcoatRoughness:.045
+    color:dark?0xe4c58d:0xefd7a8,map:getTexture(p.color,p.type),
+    roughness:.18,metalness:.005,clearcoat:.88,clearcoatRoughness:.06
   });
 
   const body=new THREE.Mesh(turnedPieceGeometry(scale),bodyMat);
@@ -423,7 +432,8 @@ function pieceMesh(p){
   const shoulder=new THREE.Mesh(new THREE.TorusGeometry(.438*scale,.020*scale,10,52),metalMat);
   shoulder.rotation.x=Math.PI/2;shoulder.position.y=.235*scale;shoulder.castShadow=true;grp.add(shoulder);
 
-  const faceBase=new THREE.Mesh(new THREE.CylinderGeometry(.418*scale,.418*scale,.032*scale,48),bevelMat);
+  const faceBaseMat=dark?new THREE.MeshPhysicalMaterial({color:0x6e512d,roughness:.26,metalness:.22,clearcoat:.58}):bevelMat;
+  const faceBase=new THREE.Mesh(new THREE.CylinderGeometry(.418*scale,.418*scale,.032*scale,48),faceBaseMat);
   faceBase.position.y=.286*scale;faceBase.castShadow=true;grp.add(faceBase);
 
   const face=new THREE.Mesh(new THREE.CylinderGeometry(.382*scale,.382*scale,.018*scale,48),[bevelMat,faceMat,bevelMat]);
